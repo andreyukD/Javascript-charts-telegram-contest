@@ -7,7 +7,6 @@ function lerp_point(p0, p1, t) {
                      lerp(p0.y, p1.y, t));
 }
 
-//my
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
@@ -34,60 +33,48 @@ function line(p0, p1) {
 }
 
 
-//my
-var p0 = {
-	x: 1,
-	y: 1
-}
-
-var p1 = {
-	x: 4,
-	y: 6
-}
-
-var p2 = {
-	x: 8,
-	y: 6
-}
-
-//console.log(line(p0,p1));
-//console.log(line(p1,p2));
-
-//
-
 var chart = JSON.parse(chart);
 
 var chartLength = chart[0].columns[0].length - 1;
-//console.log(chartLength);
 
 var arrayY0 = chart[0].columns[1];
 arrayY0.shift();
-//console.log(arrayY0);
 
 var chartMaxY0 = Math.max.apply(null, chart[0].columns[1]);
-//console.log(arrayY0.indexOf(chartMaxY0));
 
-//console.log(chartMaxY0); //278
-//278 - 100 (px)
+var arrPoints = [];
+for(var i = 0; i < chartLength; i++) {
+	arrPoints.push(new Point(i, arrayY0[i]));
+}
+
+var DOM = {
+	bigBar: '.bigBar',
+	smallBar: '.smallBar',
+	yn_dot: 'simpleY',
+	lineLERP: 'line',
+}
+
 
 function getCurrentYProportion(currentY, max) {
 	return currentY * 100 / max;
 }
 
-var arrPoints = [];
-for(var i = 0; i < chartLength; i++) {
-	//console.log(getCurrentYProportion(arrayY0[i], chartMaxY0));
-	document.querySelector('.smallBar').insertAdjacentHTML('beforeend', '<span data-id="'+i+'"><i class="simpleY" style="bottom:'+getCurrentYProportion(arrayY0[i], chartMaxY0)+'%;"></i></span>');
+function renderChart(el, x_start, x_end) {
+	x_start = typeof x_start !== 'undefined' ? x_start : 0;
+	x_end = typeof x_end !== 'undefined' ? x_end : chartLength;
 	
-	arrPoints.push(new Point(i, arrayY0[i]));
-}
-//console.log(arrPoints);
-
-for(var i = 0; i < chartLength - 1; i++) {
-	var points = line(arrPoints[i], arrPoints[i+1]);
-	console.log(points);
-	for(var j = 0;j<points.length;j++) {
-		document.querySelector('span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="line" style="bottom:'+getCurrentYProportion(points[j].y, chartMaxY0)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
+	for(var i = x_start; i < x_end; i++) {
+		document.querySelector(el).insertAdjacentHTML('beforeend', '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(arrayY0[i], chartMaxY0)+'%;"></i></span>');
+		
+		if(i !== x_end - 1) {
+			var points = line(arrPoints[i], arrPoints[i+1]);
+			for(var j = 0;j<points.length;j++) {
+				document.querySelector(el + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, chartMaxY0)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
+			}				
+		}
 	}
+
 }
 
+renderChart(DOM.bigBar, 0, chartLength);
+renderChart(DOM.smallBar, 0, chartLength);

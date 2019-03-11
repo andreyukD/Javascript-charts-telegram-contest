@@ -5,16 +5,21 @@
 	<title>Document</title>
 </head>
 <style>
+	.bigBar {margin-bottom:50px;border:1px solid red;height: 150px;}
 	.wrapper {max-width: 1000px;margin:0 auto;}
-	.smallBar {height: 150px;background:#F5F9FB;display:flex;}
-	.smallBar span {position:relative;width: 100%;border-left:1px solid #ccc;}
-	.smallBar span:after {content:'';display: block;width: 2px;height: 2px;background:red;bottom: 0;left: 0;position:absolute;transform:translateX(-50%);}
-	.smallBar span i.simpleY {display: block;width: 2px;height: 2px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
-	.smallBar span i.line {display: block;width: 1px;height: 1px;background:green;position:absolute;}
+	.smallBar, .bigBar {background:#F5F9FB;display:flex;}
+	.smallBar span, .bigBar span {position:relative;width: 100%;border-left:1px solid #ccc;}
+	.smallBar span:after, .bigBar span:after {content:'';display: block;width: 2px;height: 2px;background:red;bottom: 0;left: 0;position:absolute;transform:translateX(-50%);}
+	.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 2px;height: 2px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
+	.smallBar span i.line, .bigBar span i.line {display: block;width: 1px;height: 1px;background:green;position:absolute;}
+	
+	.followers {font-weight:700;margin-bottom:10px;color:#222222;}
+	.smallBar {height:65px;}
 </style>
 <body>
 	<div class="wrapper">
-			
+		<div class="followers">Followers</div>
+		<div class="bigBar"></div>	
 		<div class="smallBar"></div>
 	</div>
 	
