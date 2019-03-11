@@ -4,9 +4,21 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 </head>
+<style>
+	.wrapper {max-width: 1000px;margin:0 auto;}
+	.smallBar {height: 150px;background:#F5F9FB;display:flex;}
+	.smallBar span {position:relative;width: 100%;border-left:1px solid #ccc;}
+	.smallBar span:after {content:'';display: block;width: 2px;height: 2px;background:red;bottom: 0;left: 0;position:absolute;transform:translateX(-50%);}
+	.smallBar span i.simpleY {display: block;width: 2px;height: 2px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
+	.smallBar span i.line {display: block;width: 1px;height: 1px;background:green;position:absolute;}
+</style>
 <body>
+	<div class="wrapper">
+			
+		<div class="smallBar"></div>
+	</div>
 	
-	
+	<script src="chart_data.js"></script>
 	<script src="app.js"></script>
 </body>
 </html>

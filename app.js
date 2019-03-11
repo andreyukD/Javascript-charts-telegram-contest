@@ -50,7 +50,44 @@ var p2 = {
 	y: 6
 }
 
-console.log(line(p0,p1));
-console.log(line(p1,p2));
+//console.log(line(p0,p1));
+//console.log(line(p1,p2));
 
+//
+
+var chart = JSON.parse(chart);
+
+var chartLength = chart[0].columns[0].length - 1;
+//console.log(chartLength);
+
+var arrayY0 = chart[0].columns[1];
+arrayY0.shift();
+//console.log(arrayY0);
+
+var chartMaxY0 = Math.max.apply(null, chart[0].columns[1]);
+//console.log(arrayY0.indexOf(chartMaxY0));
+
+//console.log(chartMaxY0); //278
+//278 - 100 (px)
+
+function getCurrentYProportion(currentY, max) {
+	return currentY * 100 / max;
+}
+
+var arrPoints = [];
+for(var i = 0; i < chartLength; i++) {
+	//console.log(getCurrentYProportion(arrayY0[i], chartMaxY0));
+	document.querySelector('.smallBar').insertAdjacentHTML('beforeend', '<span data-id="'+i+'"><i class="simpleY" style="bottom:'+getCurrentYProportion(arrayY0[i], chartMaxY0)+'%;"></i></span>');
+	
+	arrPoints.push(new Point(i, arrayY0[i]));
+}
+//console.log(arrPoints);
+
+for(var i = 0; i < chartLength - 1; i++) {
+	var points = line(arrPoints[i], arrPoints[i+1]);
+	console.log(points);
+	for(var j = 0;j<points.length;j++) {
+		document.querySelector('span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="line" style="bottom:'+getCurrentYProportion(points[j].y, chartMaxY0)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
+	}
+}
 
