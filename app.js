@@ -94,18 +94,19 @@ function renderChart(el, x_start, x_end, max) {
 	for(var k = 0; k < numberOfChartsY; k++) {
 	
 		var div = document.createElement('div');
-		div.className = 'y y'+k;
+		//div.className = 'y y'+k;
+		div.className = 'y ' + arrLabels[k];
 		document.querySelector(el).appendChild(div);
 	
 		for(var i = x_start; i < x_end; i++) {
-			document.querySelector(el+ ' .y'+k).insertAdjacentHTML('beforeend', '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i></span>');
+			document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i></span>');
 			
 			
 			if(i !== x_end - 1) {
             
 				var points = line(arrAllPoints[k][i], arrAllPoints[k][i+1]);
 				for(var j = 0;j<points.length;j++) {
-					document.querySelector(el+ ' .y'+k + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, max)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
+					document.querySelector(el+ ' .'+arrLabels[k] + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, max)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
 				}
 				
 			}
