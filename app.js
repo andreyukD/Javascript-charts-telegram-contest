@@ -1,5 +1,3 @@
-function hypot(x, y){ return Math.sqrt(x*x + y*y) }
-
 //https://gist.github.com/ManadayM/64d65825da97ffd994b4
 function prettyDate(epoch, dateFormat){
 	//TODO: add args validations here in future..
@@ -76,39 +74,9 @@ function prettyDate(epoch, dateFormat){
 	return _df;
 }
 
-//https://www.redblobgames.com/grids/line-drawing.html
-function lerp(start, end, t) {
-    return start + t * (end-start);
-}
-
-function lerp_point(p0, p1, t) {
-    return new Point(lerp(p0.x, p1.x, t),
-	lerp(p0.y, p1.y, t));
-}
-
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
-}
-
-function diagonal_distance(p0, p1) {
-    var dx = p1.x - p0.x, dy = p1.y - p0.y;
-    return Math.max(Math.abs(dx), Math.abs(dy));
-}
-
-function round_point(p) {
-	return new Point(p.x, p.y);
-    //return new Point(Math.round(p.x), Math.round(p.y));
-}
-
-function line(p0, p1) {
-    var points = [];
-    var N = diagonal_distance(p0, p1);
-    for (var step = 0; step <= N; step++) {
-        var t = N == 0? 0.0 : step / N;
-        points.push(round_point(lerp_point(p0, p1, t)));
-	}
-    return points;
 }
 
 //https://stackoverflow.com/questions/10564441/how-to-find-the-max-min-of-a-nested-array-in-javascript
@@ -173,19 +141,7 @@ function renderPart(el, x_start, x_end, max) {
 		for(var i = x_start; i < x_end; i++) {
 			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
 		}
-		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);	
-		//to delete
-		//for(var i = x_start; i < x_end; i++) {
-		//	if(i !== x_end - 1) {
-		//		
-		//	var points = line(arrAllPoints[k][i], arrAllPoints[k][i+1]);
-		//	for(var j = 0;j<points.length;j++) {
-		//	document.querySelector(el+ ' .'+arrLabels[k] + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, max)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
-		//	}
-		//		
-		//	}			
-		//}
-		//to delete
+		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
 	}
 }
 
@@ -196,6 +152,7 @@ function renderWrapperBar(el, x_start, x_end) {
 		document.querySelector(el).appendChild(div);
 	}
 }
+
 
 function generateAllPoints(numberOfChartsY, chartLength, yDataArr) {
 	var arrAllPoints = [];
@@ -302,7 +259,6 @@ var DOM = {
 	bigBar: '.bigBar',
 	smallBar: '.smallBar',
 	yn_dot: 'simpleY',
-	lineLERP: 'line',
 	checkboxLineY: 'checkboxLineY',
 	checkboxWrap: '.checkBoxWrap',
 	vertGridWrap: '.vert',
@@ -312,7 +268,7 @@ var arrLabels = getYLabels(numberData);
 var yDataArr = generateAllDotsY(numberData);
 var arrDates = chart[numberData].columns[0];
 arrDates.shift();
-console.log(arrDates);
+//console.log(arrDates);
 var arrAllPoints = generateAllPoints(numberOfChartsY, chartLength, yDataArr);
 generateCSS(sheet, arrLabels, numberOfChartsY, numberData);
 //
@@ -342,5 +298,3 @@ var state = new State(0, chartLength);
 //
 generateVertGrid(state.getmax());
 generateHorGrid(state.cur_x_start, state.cur_x_end);
-
-console.log(hypot(3,4));
