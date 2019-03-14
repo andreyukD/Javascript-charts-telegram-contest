@@ -7,11 +7,11 @@
 <style>
 	body {font-size:14px;}
 	.bigBar {margin-bottom:30px;height: 150px;}
-	.wrapper {max-width: 320px;margin:0 auto;}
+	.wrapper {max-width: 640px;margin:0 auto;}
 	.smallBar, .bigBar {background:#F5F9FB;display:flex;position:relative;}
-	.smallBar span, .bigBar span {position:relative;width: 100%;border-left:1px solid #ccc;}
+	.smallBar span, .bigBar span {position:relative;width: 100%;}
 	/*.smallBar span:after, .bigBar span:after {content:'';display: block;width: 2px;height: 2px;background:red;bottom: 0;left: 0;position:absolute;transform:translateX(-50%);}*/
-	.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 3px;height: 3px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
+	.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
 	.smallBar span i.line, .bigBar span i.line {display: block;width: 1px;height: 1px;background:green;position:absolute;}
 	i {transition:all 1s;}
 	.followers {font-weight:700;margin-bottom:10px;color:#222222;}
@@ -20,13 +20,16 @@
 	.y {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;}
 	.y.hide {display:none;}
 	
-	.vert {position:absolute;width:100%;top: 0;left: 0;height:100%;border:1px solid green;display:flex;flex-direction:column;}
-	.vert span {width:100%;border-bottom:1px solid #000;height:100%;position:relative;}
+	.vert {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;flex-direction:column;}
+	.vert span {width:100%;height:100%;position:relative;}
 	.vert span i {position:absolute;right:calc(100% + 5px);top:-15px;color:red;}
 	
 	.hor {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;justify-content:space-between;;}
-	.hor span {border-right:1px solid #000;position:relative;width:auto;display:flex;flex-direction:column;justify-content:flex-end;}
-	.hor span i {position:relative;color:red;top:20px;}	
+	.hor span {position:relative;width:auto;display:flex;flex-direction:column;justify-content:flex-end;}
+	.hor span i {position:relative;color:red;top:20px;}
+	
+	.y svg {height:100%;width:100%;}
+	.y svg line {stroke:red;stroke-width:2;}
 </style>
 <body>
 	<div class="wrapper">

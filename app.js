@@ -1,3 +1,5 @@
+function hypot(x, y){ return Math.sqrt(x*x + y*y) }
+
 //https://gist.github.com/ManadayM/64d65825da97ffd994b4
 function prettyDate(epoch, dateFormat){
 	//TODO: add args validations here in future..
@@ -169,20 +171,20 @@ function renderPart(el, x_start, x_end, max) {
 		
 		var allSpanInY = '';
 		for(var i = x_start; i < x_end; i++) {
-			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i></span>';
+			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
 		}
 		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);	
 		//to delete
-		for(var i = x_start; i < x_end; i++) {
-			if(i !== x_end - 1) {
-				
-			//var points = line(arrAllPoints[k][i], arrAllPoints[k][i+1]);
-			//for(var j = 0;j<points.length;j++) {
-			//document.querySelector(el+ ' .'+arrLabels[k] + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, max)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
-			//}
-				
-			}			
-		}
+		//for(var i = x_start; i < x_end; i++) {
+		//	if(i !== x_end - 1) {
+		//		
+		//	var points = line(arrAllPoints[k][i], arrAllPoints[k][i+1]);
+		//	for(var j = 0;j<points.length;j++) {
+		//	document.querySelector(el+ ' .'+arrLabels[k] + ' span[data-id="'+i+'"]').insertAdjacentHTML('beforeend', '<i class="'+DOM.lineLERP+'" style="bottom:'+getCurrentYProportion(points[j].y, max)+'%;left:'+((points[j].x - i) * 100 )+'%;"></i>');
+		//	}
+		//		
+		//	}			
+		//}
 		//to delete
 	}
 }
@@ -214,7 +216,7 @@ function generateCSS(sheet, arrLabels, numberOfChartsY, numberData) {
 		var selector = arrLabels[k];
 		
 		var strDotsY = '.'+selector + ' ' + '.'+DOM.yn_dot+' {background:'+getColorByLabel(selector,numberData)+' !important;}';
-		var strLines = '.'+selector + ' ' + '.'+DOM.lineLERP+' {background:'+getColorByLabel(selector,numberData)+' !important;}';
+		var strLines = '.'+selector + ' ' + 'svg line {stroke:'+getColorByLabel(selector,numberData)+' !important;}';
 		
 		sheet.insertRule(strDotsY, 0);
 		sheet.insertRule(strLines, 0);
@@ -292,7 +294,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 0;
+var numberData = 3;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
@@ -340,3 +342,5 @@ var state = new State(0, chartLength);
 //
 generateVertGrid(state.getmax());
 generateHorGrid(state.cur_x_start, state.cur_x_end);
+
+console.log(hypot(3,4));
