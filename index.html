@@ -7,7 +7,9 @@
 <style>
 	.bigBar {margin-bottom:30px;height: 150px;}
 	.wrapper {max-width: 640px;margin:0 auto;}
+	.bigBar {overflow:scroll;} .bigBar .sub {width:200% !important;}
 	.smallBar, .bigBar {background:#F5F9FB;display:flex;position:relative;}
+	.smallBar .sub, .bigBar .sub {left:0;top:0;position:absolute;width:100%;height:100%;}
 	.smallBar span, .bigBar span {position:relative;width: 100%;}
 
 	.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
@@ -29,6 +31,9 @@
 	
 	.y svg {height:100%;width:100%;}
 	.y svg line {stroke:red;stroke-width:2;}
+	
+	.slider_chart_wrap {background:#000;margin-top: 20px;position:relative;height: 50px;}
+	.slider_chart {height: 100%;background:red;width:320px;position:absolute;left:0;}
 </style>
 <body>
 	<div class="wrapper">
@@ -39,6 +44,10 @@
 		</div>	
 		<div class="smallBar"></div>
 		<div class="checkBoxWrap"></div>
+		
+		<div class="slider_chart_wrap">
+			<div class="slider_chart"></div>
+		</div>
 	</div>
 	
 	<script src="chart_data.js"></script>

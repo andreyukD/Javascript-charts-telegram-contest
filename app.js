@@ -146,10 +146,14 @@ function renderPart(el, x_start, x_end, max) {
 }
 
 function renderWrapperBar(el, x_start, x_end) {
+	var divSub = document.createElement('div');
+	divSub.className = DOM.subInBar;	
+	document.querySelector(el).appendChild(divSub);
+	
 	for(var k = 0; k < numberOfChartsY; k++) {
 		var div = document.createElement('div');
 		div.className = 'y ' + arrLabels[k];
-		document.querySelector(el).appendChild(div);
+		document.querySelector(el + ' .' + DOM.subInBar).appendChild(div);
 	}
 }
 
@@ -216,6 +220,54 @@ function setEventListeners(ch) {
 			generateVertGrid(state.getmax());
 		});
 	});
+	
+	//
+	
+	
+	var handler = moveSlider.bind(this);
+	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function() {
+		document.addEventListener('mousemove', handler);
+		
+		document.addEventListener('mouseup', function() {
+			console.log('UP');
+			document.removeEventListener('mousemove', handler);
+		});		
+	});
+
+	var elSlidMove = document.querySelector(DOM.slider_chart);
+	var elBigBar = document.querySelector(DOM.bigBar);
+	var widthSlider = 320; //100% - chartWidth. 640 - 320
+	var stepSize = widthSlider / 100;
+	
+	function moveSlider(e) {
+		//console.log(document.querySelector(DOM.bigBar).scrollLeft); //in px
+		
+		var scrollPercentage = 100 * elBigBar.scrollLeft / (elBigBar.scrollWidth - elBigBar.clientWidth);
+		//console.log(scrollPercentage);//0-100
+		
+		//console.log(e);
+		var x = e.pageX - elSlidMove.parentNode.offsetLeft;
+	
+
+		if(x > 0 && x < 640 - widthSlider) {
+			elSlidMove.style.left = x + 'px';
+		}
+		else if(x <= 0) {elSlidMove.style.left = 0 + 'px';}
+		else if(x >= 640 - widthSlider) {elSlidMove.style.left = 640 - widthSlider + 'px';}
+		
+		//console.log(x);
+		
+		var y_start = x;
+		if(x <= 0) {y_start = 0;}
+		else if(x >= 640 - widthSlider) {y_start = 640 - widthSlider;}
+		//console.log(y_start);
+		
+		elBigBar.scrollLeft = (elBigBar.scrollWidth - elBigBar.clientWidth) * Math.round(y_start / stepSize) / 100;
+		//console.log(Math.round(y_start / stepSize));
+		
+		
+		//some - to Do 
+	}
 }
 //
 function getMax(x_start, x_end, whichActive) {
@@ -263,6 +315,8 @@ var DOM = {
 	checkboxWrap: '.checkBoxWrap',
 	vertGridWrap: '.vert',
 	horGridWrap: '.hor',
+	slider_chart: '.slider_chart',
+	subInBar: 'sub',
 }
 var arrLabels = getYLabels(numberData);
 var yDataArr = generateAllDotsY(numberData);
