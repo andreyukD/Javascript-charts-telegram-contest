@@ -232,7 +232,7 @@ function setEventListeners(ch) {
 	var resizerLeft = document.querySelector(div + ' .resizer.bottom-left');
 	var resizerRight = document.querySelector(div + ' .resizer.bottom-right');
 
-	var minimum_size = 40;
+	var minimum_size = 100;
 	var original_width = 0;
 	var original_height = 0;
 	var original_x = 0;
@@ -242,9 +242,15 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
+	var coords, shiftX;
+
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
 		if(e.target.className !== 'resizer bottom-left' && e.target.className !== 'resizer bottom-right') {//чтобы не ездила когда я делаю ресайз
+		
+			coords = getCoords(elSlidMove);//чтобы высчитать сдвиг
+			shiftX = e.pageX - coords.left;		
+			
 			updateInfoAboutSlider(widthSlider, sliderAllWidth);
 			document.addEventListener('mousemove', handler);
 			document.addEventListener('mouseup', stopMovingSlider);
@@ -252,7 +258,7 @@ function setEventListeners(ch) {
 	});	
 	
 	
-	resizerLeft.addEventListener('mousedown', function(e) {
+	resizerLeft.addEventListener('mousedown', function(e) {	
 	  helperInitResizers(e);
 	  window.addEventListener('mousemove', resizeLeft);
 	  window.addEventListener('mouseup', stopResizeLeft); 
@@ -265,8 +271,7 @@ function setEventListeners(ch) {
 	});		
 	
 	function changeSubWidth() {
-		var sub = elBigBar.querySelector('.'+DOM.subInBar);
-		sub.style.width = (sliderAllWidth / widthSlider * 100) +"%";
+		elBigBar.querySelector('.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
 	}
 	
 	function stopMovingSlider() {
@@ -284,10 +289,23 @@ function setEventListeners(ch) {
 		//console.log(obj);
 	}
 	
+	//https://learn.javascript.ru/coordinates-document#getCoords
+	function getCoords(elem) {
+		var box = elem.getBoundingClientRect();
+
+		return {
+		top: box.top + pageYOffset,
+		left: box.left + pageXOffset
+		};
+	}
+
+	
 	function moveSlider(e) {	
 		changeSubWidth();
 		
-		var x = e.pageX - elSlidMove.parentNode.offsetLeft;
+		//https://learn.javascript.ru/drag-and-drop
+		
+		var x = e.pageX - shiftX - elSlidMove.parentNode.offsetLeft;
 		
 		if(x <= 0) {x = 0;}
 		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
@@ -438,3 +456,13 @@ var state = new State(0, chartLength);
 //
 generateVertGrid(state.getmax());
 generateHorGrid(state.cur_x_start, state.cur_x_end);
+
+//
+function initScrolls() {
+	widthSlider = document.querySelector(DOM.slider_chart).offsetWidth;
+	sliderAllWidth = document.querySelector(DOM.bigBar).offsetWidth;
+	document.querySelector(DOM.bigBar).querySelector('.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
+	document.querySelector(DOM.slider_chart).style.left = "0";
+	document.querySelector(DOM.bigBar).scrollLeft = 0;
+}
+initScrolls();
