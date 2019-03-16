@@ -240,7 +240,7 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
-	var coords, shiftX;
+	var coords, shiftX, shiftL, coordsL, helperForLeftBouning;
 
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
@@ -257,6 +257,10 @@ function setEventListeners(ch) {
 	
 	
 	resizerLeft.addEventListener('mousedown', function(e) {	
+	
+			coordsL = getCoords(elSlidMove);//чтобы высчитать сдвиг
+			shiftL = e.pageX - coordsL.left;			
+			
 	  helperInitResizers(e);
 	  window.addEventListener('mousemove', resizeLeft);
 	  window.addEventListener('mouseup', stopResizeLeft); 
@@ -316,6 +320,7 @@ function setEventListeners(ch) {
 		
 		elSlidMove.style.left = x + 'px';
 		elBigBar.scrollLeft = x * (elBigBar.scrollWidth / elBigBar.offsetWidth);
+		
 	}
 	
 //	
@@ -324,42 +329,43 @@ function setEventListeners(ch) {
       original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
       original_x = element.getBoundingClientRect().left;
       original_mouse_x = e.pageX;
+	  helperForLeftBouningOldLeft = parseFloat(elSlidMove.style.left.replace('px', ''));
 	}
 
 	function resizeLeft(e) {
 	updateInfoAboutSlider();
 	changeSubWidth();
 	
-		var tempBound = e.pageX;
-		if(e.pageX < 0) {tempBound = 0;}
-		if(e.pageX > sliderAllWidth) {tempBound = sliderAllWidth}
+	if(e.pageX - elSlidMove.parentNode.offsetLeft >= 0) {//after need to 
+
+        var width = original_width - (e.pageX - original_mouse_x);
 		
-		//
-		
-        var width = original_width - (tempBound - original_mouse_x);
 		
         if (width > minimum_size) {
           element.style.width = width + 'px';
-          element.style.left = original_x + (tempBound - original_mouse_x) + 'px';
 		  
-		  elBigBar.scrollLeft = tempBound * (elBigBar.scrollWidth / elBigBar.offsetWidth);
+		  var leftSlidCur = helperForLeftBouningOldLeft + (e.pageX - original_mouse_x)
+          element.style.left = leftSlidCur + 'px';
+		  
+		  elBigBar.scrollLeft = leftSlidCur * (elBigBar.scrollWidth / elBigBar.offsetWidth);
 		  //у левого скролл перемещение похоже на драг
 
         }
+		}//if>0
     }
 	
 	function resizeRight(e) {
 	updateInfoAboutSlider();
 	changeSubWidth();
 	
-		console.log(`
-			${original_width} - original_width
-			${original_x} - original_x
-			${original_mouse_x} - original_mouse_x
-			${e.pageX - original_mouse_x} - e.pageX - original_mouse_x
-			${e.pageX - elSlidMove.parentNode.offsetLeft} - e.pageX - original_x
-			${sliderAllWidth} - sliderAllWidth
-		`);		
+		//console.log(`
+		//	${original_width} - original_width
+		//	${original_x} - original_x
+		//	${original_mouse_x} - original_mouse_x
+		//	${e.pageX - original_mouse_x} - e.pageX - original_mouse_x
+		//	${e.pageX - elSlidMove.parentNode.offsetLeft} - e.pageX - original_x
+		//	${sliderAllWidth} - sliderAllWidth
+		//`);		
 
 		if(e.pageX - elSlidMove.parentNode.offsetLeft <= sliderAllWidth) {
 		
