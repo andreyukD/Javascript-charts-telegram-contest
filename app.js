@@ -223,101 +223,124 @@ function setEventListeners(ch) {
 	
 	//
 	
-	
-	var handler = moveSlider.bind(this);
-	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function() {
-		//document.addEventListener('mousemove', handler);
-		
-		document.addEventListener('mouseup', function() {
-			console.log('UP');
-			//document.removeEventListener('mousemove', handler);
-		});		
-	});
-
 	var elSlidMove = document.querySelector(DOM.slider_chart);
 	var elBigBar = document.querySelector(DOM.bigBar);
 	
-	function moveSlider(e) {
-	
-	var widthSlider = elSlidMove.offsetWidth; //320
-	var sliderAllWidth = elBigBar.offsetWidth; //640 - any wrap element
-	var stepSize = widthSlider / 100;	
-	
-		//bigBar sub на ресайз обновлять
-	
-	
-		//console.log(document.querySelector(DOM.bigBar).scrollLeft); //in px
-		//var scrollPercentage = 100 * elBigBar.scrollLeft / (elBigBar.scrollWidth - elBigBar.clientWidth);
-		//console.log(scrollPercentage);//0-100
-		
-		var x = e.pageX - elSlidMove.parentNode.offsetLeft;
-		//console.log(x);
-		
-		
-		//console.log(elSlidMove.parentNode);
-		//console.log(e.clientX);
-	
-		if(x <= 0) {x = 0;}
-		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
-		
-		//console.log(elBigBar.scrollWidth / elBigBar.offsetWidth);
-		
-		elSlidMove.style.left = x + 'px';
-		elBigBar.scrollLeft = x * (elBigBar.scrollWidth / elBigBar.offsetWidth);
-		//console.log(Math.round(x / stepSize));
-		
-	}
-	
-//	
-  var div = DOM.slider_chart;
-  var element = document.querySelector(div);
-	
+	var div = DOM.slider_chart;
+	var element = document.querySelector(div);
+
 	var resizerLeft = document.querySelector(div + ' .resizer.bottom-left');
 	var resizerRight = document.querySelector(div + ' .resizer.bottom-right');
 
-	  var minimum_size = 20;
-	  var original_width = 0;
-	  var original_height = 0;
-	  var original_x = 0;
-	  var original_y = 0;
-	  var original_mouse_x = 0;
-	  
+	var minimum_size = 40;
+	var original_width = 0;
+	var original_height = 0;
+	var original_x = 0;
+	var original_y = 0;
+	var original_mouse_x = 0;
+	
+	var widthSlider, sliderAllWidth;
+	var handler = moveSlider.bind(this);
+	
+
+	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
+		if(e.target.className !== 'resizer bottom-left' && e.target.className !== 'resizer bottom-right') {//чтобы не ездила когда я делаю ресайз
+			updateInfoAboutSlider(widthSlider, sliderAllWidth);
+			document.addEventListener('mousemove', handler);
+			document.addEventListener('mouseup', stopMovingSlider);
+		}
+	});	
+	
+	
+	resizerLeft.addEventListener('mousedown', function(e) {
+	  helperInitResizers(e);
+	  window.addEventListener('mousemove', resizeLeft);
+	  window.addEventListener('mouseup', stopResizeLeft); 
+	});
+
+	resizerRight.addEventListener('mousedown', function(e) {
+	  helperInitResizers(e);
+	  window.addEventListener('mousemove', resizeRight);
+	  window.addEventListener('mouseup', stopResizeRight);  
+	});		
+	
+	function changeSubWidth() {
+		var sub = elBigBar.querySelector('.'+DOM.subInBar);
+		sub.style.width = (sliderAllWidth / widthSlider * 100) +"%";
+	}
+	
+	function stopMovingSlider() {
+		document.removeEventListener('mousemove', handler);		
+	}
+	
+	function updateInfoAboutSlider() {
+		widthSlider = elSlidMove.offsetWidth; //320
+		sliderAllWidth = elBigBar.offsetWidth; //640 - any wrap element
+		
+		//var obj = {
+		//	widthSlider: widthSlider,
+		//	sliderAllWidth: sliderAllWidth
+		//}
+		//console.log(obj);
+	}
+	
+	function moveSlider(e) {	
+		changeSubWidth();
+		
+		var x = e.pageX - elSlidMove.parentNode.offsetLeft;
+		
+		if(x <= 0) {x = 0;}
+		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
+		//console.log(x);
+		
+		elSlidMove.style.left = x + 'px';
+		elBigBar.scrollLeft = x * (elBigBar.scrollWidth / elBigBar.offsetWidth);
+	}
+	
+//	
 	function helperInitResizers(e) {
 	 e.preventDefault()
       original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
       original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
       original_x = element.getBoundingClientRect().left;
       original_y = element.getBoundingClientRect().top;
-      original_mouse_x = e.pageX;		
+      original_mouse_x = e.pageX;
 	}
-  
-  resizerLeft.addEventListener('mousedown', function(e) {
-	  helperInitResizers(e);
-      window.addEventListener('mousemove', resizeLeft);
-      window.addEventListener('mouseup', stopResizeLeft);  
-  });
-  
-  resizerRight.addEventListener('mousedown', function(e) {
-      helperInitResizers(e);
-      window.addEventListener('mousemove', resizeRight);
-      window.addEventListener('mouseup', stopResizeRight);  
-  });
-  
-  
+
 	function resizeLeft(e) {
-	console.log('left');
-        var width = original_width - (e.pageX - original_mouse_x)
+	updateInfoAboutSlider();
+	changeSubWidth();
+	
+		var tempBound = e.pageX;
+		if(e.pageX < 0) {tempBound = 0;}
+		if(e.pageX > sliderAllWidth) {tempBound = sliderAllWidth}
+		
+        var width = original_width - (tempBound - original_mouse_x);
+		
         if (width > minimum_size) {
-          element.style.width = width + 'px'
-          element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+          element.style.width = width + 'px';
+          element.style.left = original_x + (tempBound - original_mouse_x) + 'px';
+		  
+		  elBigBar.scrollLeft = tempBound * (elBigBar.scrollWidth / elBigBar.offsetWidth);
+		  //у левого скролл перемещение похоже на драг
+
         }
     }
 	
 	function resizeRight(e) {
-	console.log('right');
-        var width = original_width + (e.pageX - original_mouse_x);
+	updateInfoAboutSlider();
+	changeSubWidth();
+
+		var tempBound = e.pageX;
+		if(e.pageX < 0) {tempBound = 0;}
+		if(e.pageX > sliderAllWidth) {tempBound = sliderAllWidth;}
+	
+        var width = original_width + (tempBound - original_mouse_x);
         if (width > minimum_size) {
           element.style.width = width + 'px';
+		  
+		  elBigBar.scrollLeft = elSlidMove.offsetLeft * (elBigBar.scrollWidth / elBigBar.offsetWidth) + (elBigBar.scrollWidth / elBigBar.offsetWidth);
+		  //у лева и права разные функции скролла перемещение - здесь получаем одступ от слайдера к углу и умножаем на пропорцию всего скролла на враппер. и добавляем пропорцию
         }	
     }	
 	
@@ -328,9 +351,7 @@ function setEventListeners(ch) {
     function stopResizeRight() {
       window.removeEventListener('mousemove', resizeRight)
     }	
-	
-}
-
+}	
 
 
 
