@@ -234,9 +234,7 @@ function setEventListeners(ch) {
 
 	var minimum_size = 100;
 	var original_width = 0;
-	var original_height = 0;
 	var original_x = 0;
-	var original_y = 0;
 	var original_mouse_x = 0;
 	
 	var widthSlider, sliderAllWidth;
@@ -306,6 +304,11 @@ function setEventListeners(ch) {
 		//https://learn.javascript.ru/drag-and-drop
 		
 		var x = e.pageX - shiftX - elSlidMove.parentNode.offsetLeft;
+		//console.log(`
+		//	${e.pageX} - e.pageX
+		//	${shiftX} - shiftX
+		//	${elSlidMove.parentNode.offsetLeft} - elSlidMove.parentNode.offsetLeft
+		//`);
 		
 		if(x <= 0) {x = 0;}
 		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
@@ -319,9 +322,7 @@ function setEventListeners(ch) {
 	function helperInitResizers(e) {
 	 e.preventDefault()
       original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
-      original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
       original_x = element.getBoundingClientRect().left;
-      original_y = element.getBoundingClientRect().top;
       original_mouse_x = e.pageX;
 	}
 
@@ -332,6 +333,8 @@ function setEventListeners(ch) {
 		var tempBound = e.pageX;
 		if(e.pageX < 0) {tempBound = 0;}
 		if(e.pageX > sliderAllWidth) {tempBound = sliderAllWidth}
+		
+		//
 		
         var width = original_width - (tempBound - original_mouse_x);
 		
@@ -348,18 +351,31 @@ function setEventListeners(ch) {
 	function resizeRight(e) {
 	updateInfoAboutSlider();
 	changeSubWidth();
-
-		var tempBound = e.pageX;
-		if(e.pageX < 0) {tempBound = 0;}
-		if(e.pageX > sliderAllWidth) {tempBound = sliderAllWidth;}
 	
-        var width = original_width + (tempBound - original_mouse_x);
-        if (width > minimum_size) {
-          element.style.width = width + 'px';
-		  
-		  elBigBar.scrollLeft = elSlidMove.offsetLeft * (elBigBar.scrollWidth / elBigBar.offsetWidth) + (elBigBar.scrollWidth / elBigBar.offsetWidth);
-		  //у лева и права разные функции скролла перемещение - здесь получаем одступ от слайдера к углу и умножаем на пропорцию всего скролла на враппер. и добавляем пропорцию
-        }	
+		console.log(`
+			${original_width} - original_width
+			${original_x} - original_x
+			${original_mouse_x} - original_mouse_x
+			${e.pageX - original_mouse_x} - e.pageX - original_mouse_x
+			${e.pageX - elSlidMove.parentNode.offsetLeft} - e.pageX - original_x
+			${sliderAllWidth} - sliderAllWidth
+		`);		
+
+		if(e.pageX - elSlidMove.parentNode.offsetLeft <= sliderAllWidth) {
+		
+			//
+			//var tempBound = e.pageX;
+			//if(e.pageX < 0) {tempBound = 0;}
+			
+			var width = original_width + (e.pageX - original_mouse_x);
+			
+			if (width > minimum_size) {
+			  element.style.width = width + 'px';
+			  
+			  elBigBar.scrollLeft = elSlidMove.offsetLeft * (elBigBar.scrollWidth / elBigBar.offsetWidth) + (elBigBar.scrollWidth / elBigBar.offsetWidth);
+			  //у лева и права разные функции скролла перемещение - здесь получаем одступ от слайдера к углу и умножаем на пропорцию всего скролла на враппер. и добавляем пропорцию
+			}
+		}
     }	
 	
     function stopResizeLeft() {
