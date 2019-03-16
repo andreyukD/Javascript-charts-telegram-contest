@@ -226,49 +226,114 @@ function setEventListeners(ch) {
 	
 	var handler = moveSlider.bind(this);
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function() {
-		document.addEventListener('mousemove', handler);
+		//document.addEventListener('mousemove', handler);
 		
 		document.addEventListener('mouseup', function() {
 			console.log('UP');
-			document.removeEventListener('mousemove', handler);
+			//document.removeEventListener('mousemove', handler);
 		});		
 	});
 
 	var elSlidMove = document.querySelector(DOM.slider_chart);
 	var elBigBar = document.querySelector(DOM.bigBar);
-	var widthSlider = 320; //100% - chartWidth. 640 - 320
-	var stepSize = widthSlider / 100;
 	
 	function moveSlider(e) {
+	
+	var widthSlider = elSlidMove.offsetWidth; //320
+	var sliderAllWidth = elBigBar.offsetWidth; //640 - any wrap element
+	var stepSize = widthSlider / 100;	
+	
+		//bigBar sub на ресайз обновлять
+	
+	
 		//console.log(document.querySelector(DOM.bigBar).scrollLeft); //in px
-		
-		var scrollPercentage = 100 * elBigBar.scrollLeft / (elBigBar.scrollWidth - elBigBar.clientWidth);
+		//var scrollPercentage = 100 * elBigBar.scrollLeft / (elBigBar.scrollWidth - elBigBar.clientWidth);
 		//console.log(scrollPercentage);//0-100
 		
-		//console.log(e);
 		var x = e.pageX - elSlidMove.parentNode.offsetLeft;
-	
-
-		if(x > 0 && x < 640 - widthSlider) {
-			elSlidMove.style.left = x + 'px';
-		}
-		else if(x <= 0) {elSlidMove.style.left = 0 + 'px';}
-		else if(x >= 640 - widthSlider) {elSlidMove.style.left = 640 - widthSlider + 'px';}
-		
 		//console.log(x);
 		
-		var y_start = x;
-		if(x <= 0) {y_start = 0;}
-		else if(x >= 640 - widthSlider) {y_start = 640 - widthSlider;}
-		//console.log(y_start);
 		
-		elBigBar.scrollLeft = (elBigBar.scrollWidth - elBigBar.clientWidth) * Math.round(y_start / stepSize) / 100;
-		//console.log(Math.round(y_start / stepSize));
+		//console.log(elSlidMove.parentNode);
+		//console.log(e.clientX);
+	
+		if(x <= 0) {x = 0;}
+		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
 		
+		//console.log(elBigBar.scrollWidth / elBigBar.offsetWidth);
 		
-		//some - to Do 
+		elSlidMove.style.left = x + 'px';
+		elBigBar.scrollLeft = x * (elBigBar.scrollWidth / elBigBar.offsetWidth);
+		//console.log(Math.round(x / stepSize));
+		
 	}
+	
+//	
+  var div = DOM.slider_chart;
+  var element = document.querySelector(div);
+	
+	var resizerLeft = document.querySelector(div + ' .resizer.bottom-left');
+	var resizerRight = document.querySelector(div + ' .resizer.bottom-right');
+
+	  var minimum_size = 20;
+	  var original_width = 0;
+	  var original_height = 0;
+	  var original_x = 0;
+	  var original_y = 0;
+	  var original_mouse_x = 0;
+	  
+	function helperInitResizers(e) {
+	 e.preventDefault()
+      original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
+      original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+      original_x = element.getBoundingClientRect().left;
+      original_y = element.getBoundingClientRect().top;
+      original_mouse_x = e.pageX;		
+	}
+  
+  resizerLeft.addEventListener('mousedown', function(e) {
+	  helperInitResizers(e);
+      window.addEventListener('mousemove', resizeLeft);
+      window.addEventListener('mouseup', stopResizeLeft);  
+  });
+  
+  resizerRight.addEventListener('mousedown', function(e) {
+      helperInitResizers(e);
+      window.addEventListener('mousemove', resizeRight);
+      window.addEventListener('mouseup', stopResizeRight);  
+  });
+  
+  
+	function resizeLeft(e) {
+	console.log('left');
+        var width = original_width - (e.pageX - original_mouse_x)
+        if (width > minimum_size) {
+          element.style.width = width + 'px'
+          element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+        }
+    }
+	
+	function resizeRight(e) {
+	console.log('right');
+        var width = original_width + (e.pageX - original_mouse_x);
+        if (width > minimum_size) {
+          element.style.width = width + 'px';
+        }	
+    }	
+	
+    function stopResizeLeft() {
+      window.removeEventListener('mousemove', resizeLeft)
+    }
+	
+    function stopResizeRight() {
+      window.removeEventListener('mousemove', resizeRight)
+    }	
+	
 }
+
+
+
+
 //
 function getMax(x_start, x_end, whichActive) {
 	var tempArrActiveY = [];
@@ -303,7 +368,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 3;
+var numberData = 1;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
