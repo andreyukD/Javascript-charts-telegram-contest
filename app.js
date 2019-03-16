@@ -240,7 +240,7 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
-	var coords, shiftX, shiftL, coordsL, helperForLeftBouning;
+	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning;
 
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
@@ -258,8 +258,10 @@ function setEventListeners(ch) {
 	
 	resizerLeft.addEventListener('mousedown', function(e) {	
 	
-			coordsL = getCoords(elSlidMove);//чтобы высчитать сдвиг
-			shiftL = e.pageX - coordsL.left;			
+	
+		coordsL = getCoords(elSlidMove);//чтобы высчитать сдвиг
+		shiftL = e.pageX - coordsL.left;
+		console.log(shiftL);
 			
 	  helperInitResizers(e);
 	  window.addEventListener('mousemove', resizeLeft);
@@ -267,6 +269,11 @@ function setEventListeners(ch) {
 	});
 
 	resizerRight.addEventListener('mousedown', function(e) {
+	
+		coordsR = getCoords(document.querySelector('.resizer.bottom-right'));//чтобы высчитать сдвиг
+		shiftR = e.pageX - coordsR.left;
+
+	
 	  helperInitResizers(e);
 	  window.addEventListener('mousemove', resizeRight);
 	  window.addEventListener('mouseup', stopResizeRight);  
@@ -284,11 +291,6 @@ function setEventListeners(ch) {
 		widthSlider = elSlidMove.offsetWidth; //320
 		sliderAllWidth = elBigBar.offsetWidth; //640 - any wrap element
 		
-		//var obj = {
-		//	widthSlider: widthSlider,
-		//	sliderAllWidth: sliderAllWidth
-		//}
-		//console.log(obj);
 	}
 	
 	//https://learn.javascript.ru/coordinates-document#getCoords
@@ -336,7 +338,7 @@ function setEventListeners(ch) {
 	updateInfoAboutSlider();
 	changeSubWidth();
 	
-	if(e.pageX - elSlidMove.parentNode.offsetLeft >= 0) {//after need to 
+	if(e.pageX - shiftL - elSlidMove.parentNode.offsetLeft >= 0) {//after need to 
 
         var width = original_width - (e.pageX - original_mouse_x);
 		
@@ -367,8 +369,8 @@ function setEventListeners(ch) {
 		//	${sliderAllWidth} - sliderAllWidth
 		//`);		
 
-		if(e.pageX - elSlidMove.parentNode.offsetLeft <= sliderAllWidth) {
-		
+		console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
+		if(e.pageX - elSlidMove.parentNode.offsetLeft + (resizerRight.offsetWidth - shiftR) <= sliderAllWidth) {
 			//
 			//var tempBound = e.pageX;
 			//if(e.pageX < 0) {tempBound = 0;}
@@ -429,7 +431,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 1;
+var numberData = 3;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
