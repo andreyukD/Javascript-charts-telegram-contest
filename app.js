@@ -554,5 +554,31 @@ function initScrolls() {
 	document.querySelector(DOM.bigBar).querySelector('.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
 	document.querySelector(DOM.slider_chart).style.left = "0";
 	document.querySelector(DOM.bigBar).scrollLeft = 0;
+	
+	//initDates
+	var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
+	console.log(optimalDatesPerWidth);
+	
+	var countAllX = arrDates.length;
+	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
+	var rightStartCurX = 0 + numberCurX;
+	
+	var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
+	//console.log(everyThisXToHide);
+	for(var i = 0; i <= rightStartCurX; i++) {
+		var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
+		if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
+			if(selector) {
+				selector.style.display = "block";
+			}
+		}
+		else {
+			if(selector) {
+				selector.style.display = "none";
+			}
+		}
+	}
+	//initDates
+		
 }
 initScrolls();
