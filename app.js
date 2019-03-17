@@ -10,7 +10,7 @@ function prettyDate(epoch, dateFormat){
 	var _df 	= dateFormat;
 	
 	// convert epoch date to date object
-	var 	dt 	= new Date(epoch * 1000);
+	var dt 	= new Date(epoch);
 	
 	var	date	= dt.getDate(),
 		month	= dt.getMonth(),
@@ -133,12 +133,33 @@ function getCurrentYProportion(currentY, max) {
 }
 
 
-function renderPart(el, x_start, x_end, max) {
+function renderPart(el, x_start, x_end, max, renderAdditems) {
+	
+	if(renderAdditems) {
+	
+		var divHorWrap = document.createElement('div');
+		divHorWrap.className = 'hor';	
+		document.querySelector(el + ' .'+DOM.subInBar).appendChild(divHorWrap);
+	
+		//render X dates
+		var allSpanX = '';
+		for(var i = x_start; i < x_end - 1; i++) {
+			var g = prettyDate(arrDates[i], 'MMM dd');
+			//var g = arrDates[i];
+			allSpanX += '<span><i>'+g+'</i></span>';
+		}
+		document.querySelector(el + ' '+DOM.horGridWrap).innerHTML = '';
+		document.querySelector(el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
+		//render X dates
+	}
+	
+	
 	for(var k = 0; k < numberOfChartsY; k++) {
 		document.querySelector(el+ ' .'+arrLabels[k]).innerHTML = '';
 		
 		var allSpanInY = '';
 		for(var i = x_start; i < x_end - 1; i++) {
+			
 			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
 		}
 		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
@@ -216,8 +237,8 @@ function setEventListeners(ch) {
 	ch.forEach(function(i) {
 		i.addEventListener('change', function(e) {			
 			hideUncheked(i);
-			renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())));
-			renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())));
+			renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), true);
+			renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), false);
 			generateVertGrid(state.getmax());
 		});
 	});
@@ -417,7 +438,8 @@ function generateVertGrid(max) {
 	var part = roundMax / 5;
 	var str='';
 	for(var i=0;i<5;i++) {
-		str += '<span><i>'+(roundMax - part*i) +'</i></span>';
+		var hideFirst = i === 0 ? 'style="display:none;"' : '';
+		str += '<span><i '+hideFirst+'>'+(roundMax - part*i) +'</i></span>';
 	}
 	document.querySelector(DOM.vertGridWrap).innerHTML = '';
 	document.querySelector(DOM.vertGridWrap).insertAdjacentHTML('beforeend',str);
@@ -435,7 +457,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 4;
+var numberData = 1;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
@@ -467,8 +489,8 @@ setEventListeners(checkboxesArr);
 var chartMaxY = arrmax(getMax(0,chartLength,getActiveChecked()));
 renderWrapperBar(DOM.bigBar, 0, chartLength);
 renderWrapperBar(DOM.smallBar, 0, chartLength);
-renderPart(DOM.smallBar, 0, chartLength, chartMaxY);
-renderPart(DOM.bigBar, 0, chartLength, chartMaxY);
+renderPart(DOM.smallBar, 0, chartLength, chartMaxY, false);
+renderPart(DOM.bigBar, 0, chartLength, chartMaxY, true);
 //
 var State = function(cur_x_start, cur_x_end) {
 	this.cur_x_start = cur_x_start;
@@ -482,7 +504,7 @@ var State = function(cur_x_start, cur_x_end) {
 var state = new State(0, chartLength);
 //console.log(state.getmax());
 //
-//generateVertGrid(state.getmax());
+generateVertGrid(state.getmax());
 //generateHorGrid(state.cur_x_start, state.cur_x_end);
 
 //

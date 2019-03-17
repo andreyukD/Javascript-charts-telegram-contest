@@ -3,87 +3,23 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet"> 
 </head>
-<style>
-	* {padding: 0;box-sizing:border-box;}
-	.wrapBigBar {overflow:hidden;margin-bottom: 30px;}
-	.bigBar {background:#F5F9FB;height: 250px;overflow-x:scroll;overflow-y:hidden;padding-bottom: 30px;margin-bottom: -30px;}
-	.wrapper {margin:0 auto;width: 1000px;max-width:100%;}
-	
-	.bigBar .sub {width:100%;}
-	.smallBar, .bigBar {display:flex;position:relative;}
-	.smallBar .sub, .bigBar .sub {left:0;top:0;position:absolute;width:100%;height:100%;}
-	.smallBar span, .bigBar span {position:relative;width: 100%;}
-
-	.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);}
-
-
-	.followers {font-weight:700;margin-bottom:10px;color:#222222;}
-	
-	
-	
-	.y {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;}
-	.y.hide {display:none;}
-	
-	.vert {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;flex-direction:column;}
-	.vert span {width:100%;height:100%;position:relative;}
-	.vert span i {position:absolute;right:calc(100% + 5px);top:-15px;color:red;}
-	
-	.hor {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;justify-content:space-between;;}
-	.hor span {position:relative;width:auto;display:flex;flex-direction:column;justify-content:flex-end;}
-	.hor span i {position:relative;color:red;top:20px;}
-	
-	.y svg {height:100%;width:100%;}
-	.y svg line {stroke:red;stroke-width:2;}
-	
-	
-	.slider_chart_wrap {/*background:rgba(0,0,0,0.5);*/position:relative;}
-	.slider_chart {height: 100%;/*background:red;*/width:30%;position:absolute;left:0;resize:both;border:1px solid black;}
-	
-	
-	.slider_chart .resizers{
-	  width: 100%;
-	  height: 100%;
-	}
-
-	.slider_chart .resizers .resizer{
-	  width: 20px;
-	  height: 100%;
-	  background: white;
-	  border: 3px solid #4286f4;
-	  position: absolute;
-	  box-sizing:border-box;
-	}
-
-	.slider_chart .resizers .resizer.bottom-left {
-	  left: 0px;
-	  bottom: 0px;
-	  cursor: nesw-resize;
-	}
-	.slider_chart .resizers .resizer.bottom-right {
-	  right: 0px;
-	  bottom: 0px;
-	  cursor: nwse-resize;
-	}	
-	
-	.wrapSmallBarAbs {
-		position:absolute;width: 100%;height: 100%;left: 0;top: 0;z-index:-1;
-	}
-	.wrapSmallNDrag {position:relative;}
-	.smallBar {height:65px;}
-	.slider_chart_wrap {height: 65px;}
-</style>
+<link rel="stylesheet" href="style.css">
 <body>
 	
 	
 	<div class="wrapper">
 		<div class="followers">Followers</div>
 		
-		<div class="wrapBigBar">
-		<div class="bigBar">
+		<div class="wrapGrids">
 			<div class="vert"></div>
-			<div class="hor"></div>
-		</div>	
+			<div class="wrapBigBar">
+				<div class="bigBar"></div>	
+			</div>
+			
+			
 		</div>
 		
 		
