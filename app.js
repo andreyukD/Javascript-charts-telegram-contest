@@ -145,8 +145,7 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		var allSpanX = '';
 		for(var i = x_start; i < x_end - 1; i++) {
 			var g = prettyDate(arrDates[i], 'MMM dd');
-			//var g = arrDates[i];
-			allSpanX += '<span><i>'+g+'</i></span>';
+			allSpanX += '<span data-id='+i+'><i>'+g+'</i></span>';
 		}
 		document.querySelector(el + ' '+DOM.horGridWrap).innerHTML = '';
 		document.querySelector(el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
@@ -164,6 +163,8 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		}
 		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
 	}
+	
+	console.log(x_end);
 }
 
 function renderWrapperBar(el, x_start, x_end) {
@@ -262,7 +263,7 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
-	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning;
+	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX = arrDates.length, optimalDatesPerWidth;
 
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
@@ -271,10 +272,13 @@ function setEventListeners(ch) {
 			coords = getCoords(elSlidMove);//чтобы высчитать сдвиг
 			shiftX = e.pageX - coords.left;		
 			
-			updateInfoAboutSlider(widthSlider, sliderAllWidth);
+			updateInfoAboutSlider();
 			document.addEventListener('mousemove', handler);
 			document.addEventListener('mouseup', stopMovingSlider);
 		}
+		
+		//for ALL
+		optimalDatesPerWidth = Math.floor(elBigBar.offsetWidth / 70);
 	});	
 	
 	
@@ -329,24 +333,56 @@ function setEventListeners(ch) {
 	function moveSlider(e) {	
 		changeSubWidth();
 		
-		//https://learn.javascript.ru/drag-and-drop
+		infoCurentZoom();
 		
 		var x = e.pageX - shiftX - elSlidMove.parentNode.offsetLeft;
-		//console.log(`
-		//	${e.pageX} - e.pageX
-		//	${shiftX} - shiftX
-		//	${elSlidMove.parentNode.offsetLeft} - elSlidMove.parentNode.offsetLeft
-		//`);
 		
 		if(x <= 0) {x = 0;}
 		else if(x >= sliderAllWidth - widthSlider) {x = sliderAllWidth - widthSlider;}
-		//console.log(x);
 		
 		elSlidMove.style.left = x + 'px';
 		elBigBar.scrollLeft = x * (elBigBar.scrollWidth / elBigBar.offsetWidth);
 		
 	}
 	
+	function infoCurentZoom() {
+	
+		var leftOfSlid = parseFloat(element.style.left.replace('px',''));
+		var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
+		
+		var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
+		
+		var rightStartCurX = leftStartCurPozX + numberCurX;
+		
+		
+		//onlyforResize
+		
+		var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
+		//console.log(everyThisXToHide);
+		for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
+			var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
+			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
+				if(selector) {
+					selector.style.display = "block";
+				}
+			}
+			else {
+				if(selector) {
+					selector.style.display = "none";
+				}
+			}
+		}
+		
+		
+		//IMPORTANT DLA OTLADKI
+		console.log(`
+			${leftStartCurPozX} - left
+			${numberCurX} - center
+			${rightStartCurX} - right
+			${optimalDatesPerWidth} - optimalDatesPerWidth
+		`);
+	
+	}
 //	
 	function helperInitResizers(e) {
 	 e.preventDefault()
@@ -359,6 +395,8 @@ function setEventListeners(ch) {
 	function resizeLeft(e) {
 	updateInfoAboutSlider();
 	changeSubWidth();
+	
+	infoCurentZoom();
 	
 	if(e.pageX - shiftL - elSlidMove.parentNode.offsetLeft >= 0) {//after need to 
 
@@ -388,10 +426,12 @@ function setEventListeners(ch) {
 	function resizeRight(e) {
 	updateInfoAboutSlider();
 	changeSubWidth();	
+	
+		infoCurentZoom();
 
 		//console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
 		if(e.pageX - elSlidMove.parentNode.offsetLeft + (resizerRight.offsetWidth - shiftR) <= sliderAllWidth) {
-			//
+	
 			//var tempBound = e.pageX;
 			//if(e.pageX < 0) {tempBound = 0;}
 			
