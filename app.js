@@ -138,7 +138,7 @@ function renderPart(el, x_start, x_end, max) {
 		document.querySelector(el+ ' .'+arrLabels[k]).innerHTML = '';
 		
 		var allSpanInY = '';
-		for(var i = x_start; i < x_end; i++) {
+		for(var i = x_start; i < x_end - 1; i++) {
 			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
 		}
 		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
@@ -217,6 +217,7 @@ function setEventListeners(ch) {
 		i.addEventListener('change', function(e) {			
 			hideUncheked(i);
 			renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())));
+			renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())));
 			generateVertGrid(state.getmax());
 		});
 	});
@@ -261,7 +262,7 @@ function setEventListeners(ch) {
 	
 		coordsL = getCoords(elSlidMove);//чтобы высчитать сдвиг
 		shiftL = e.pageX - coordsL.left;
-		console.log(shiftL);
+		//console.log(shiftL);
 			
 	  helperInitResizers(e);
 	  window.addEventListener('mousemove', resizeLeft);
@@ -354,22 +355,20 @@ function setEventListeners(ch) {
 
         }
 		}//if>0
+		
+		
+		//optional - auto bounds left
+		else {
+			//element.style.left = 0;
+			//elBigBar.scrollLeft = 0;
+		}
     }
 	
 	function resizeRight(e) {
 	updateInfoAboutSlider();
-	changeSubWidth();
-	
-		//console.log(`
-		//	${original_width} - original_width
-		//	${original_x} - original_x
-		//	${original_mouse_x} - original_mouse_x
-		//	${e.pageX - original_mouse_x} - e.pageX - original_mouse_x
-		//	${e.pageX - elSlidMove.parentNode.offsetLeft} - e.pageX - original_x
-		//	${sliderAllWidth} - sliderAllWidth
-		//`);		
+	changeSubWidth();	
 
-		console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
+		//console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
 		if(e.pageX - elSlidMove.parentNode.offsetLeft + (resizerRight.offsetWidth - shiftR) <= sliderAllWidth) {
 			//
 			//var tempBound = e.pageX;
@@ -383,6 +382,11 @@ function setEventListeners(ch) {
 			  elBigBar.scrollLeft = elSlidMove.offsetLeft * (elBigBar.scrollWidth / elBigBar.offsetWidth) + (elBigBar.scrollWidth / elBigBar.offsetWidth);
 			  //у лева и права разные функции скролла перемещение - здесь получаем одступ от слайдера к углу и умножаем на пропорцию всего скролла на враппер. и добавляем пропорцию
 			}
+		}
+		
+		//optional - auto bounds right
+		else {
+			
 		}
     }	
 	
@@ -431,7 +435,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 3;
+var numberData = 4;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
@@ -478,8 +482,8 @@ var State = function(cur_x_start, cur_x_end) {
 var state = new State(0, chartLength);
 //console.log(state.getmax());
 //
-generateVertGrid(state.getmax());
-generateHorGrid(state.cur_x_start, state.cur_x_end);
+//generateVertGrid(state.getmax());
+//generateHorGrid(state.cur_x_start, state.cur_x_end);
 
 //
 function initScrolls() {
