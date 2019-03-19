@@ -161,10 +161,20 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		//render Path 
 		//var path='<svg viewBox ="0 0 100% 100%" width="100%" height="100%"><path id="lineAB" d="M 0,0 L 100,100 l 5,15 " stroke="blue" stroke-width="3" fill="none" /></svg>';
 		//render X dates
+		
+
+		
 		var allSpanX = '';
 		for(var i = x_start; i < x_end - 1; i++) {
+		
+		var strWithDataTooltip = '<div class="tooltipWrapY">';
+		for(var k = 0; k < numberOfChartsY; k++) {
+			strWithDataTooltip += '<div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+yDataArr[k][i]+'</div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+arrLabels[k]+'</div>';
+		}
+		strWithDataTooltip += '</div>';		
+		
 			var g = prettyDate(arrDates[i], 'MMM dd');
-			allSpanX += '<span data-id='+i+'><i>'+g+'</i></span>';
+			allSpanX += '<span data-id='+i+'><div class="data"><div class="d">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div><i>'+g+'</i></span>';
 		}
 		document.querySelector(el + ' '+DOM.horGridWrap).innerHTML = '';
 		document.querySelector(el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
