@@ -1,3 +1,19 @@
+//function loadJSON(callback) {   
+//  var xobj = new XMLHttpRequest();
+//  xobj.overrideMimeType("application/json");
+//  xobj.open('GET', '/chart_data.json', true);
+//  xobj.onreadystatechange = function () {
+//    if (xobj.readyState == 4 && xobj.status == "200") {
+//      callback(JSON.parse(xobj.responseText));
+//    }
+//  };
+//  xobj.send(null);  
+//}
+//
+//loadJSON(function(json) {
+//  console.log(json); // this will log out the json object
+//});
+
 //https://gist.github.com/ManadayM/64d65825da97ffd994b4
 function prettyDate(epoch, dateFormat){
 	//TODO: add args validations here in future..
@@ -123,7 +139,8 @@ function generateAllDotsY(numberData) {
 
 function createCheckboxes(numberOfChartsY, numberData) {
 	for(var i = 0; i<numberOfChartsY; i++) {
-		var string='<label class="'+DOM.checkboxLineY+'"><input data-number-checkbox="'+i+'" type="checkbox" checked>'+getNameByLabel(arrLabels[i], numberData)+'</label>';
+		var color = getColorByLabel(arrLabels[i], numberData);
+		var string='<label class="'+DOM.checkboxLineY+'"><input data-number-checkbox="'+i+'" type="checkbox" checked><span><i style="background:'+color+';border-color:'+color+';"><svg viewBox="0 0 100 100"><path id="ar'+i+'" d="M 25,55 L 45,70 L 75,35 "/></svg></i>'+getNameByLabel(arrLabels[i], numberData)+'</span></label>';
 		document.querySelector(DOM.checkboxWrap).insertAdjacentHTML('beforeend', string);
 	}
 }
@@ -141,6 +158,8 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		divHorWrap.className = 'hor';	
 		document.querySelector(el + ' .'+DOM.subInBar).appendChild(divHorWrap);
 	
+		//render Path 
+		//var path='<svg viewBox ="0 0 100% 100%" width="100%" height="100%"><path id="lineAB" d="M 0,0 L 100,100 l 5,15 " stroke="blue" stroke-width="3" fill="none" /></svg>';
 		//render X dates
 		var allSpanX = '';
 		for(var i = x_start; i < x_end - 1; i++) {
@@ -150,6 +169,8 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		document.querySelector(el + ' '+DOM.horGridWrap).innerHTML = '';
 		document.querySelector(el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
 		//render X dates
+		//document.querySelector('.mypath').insertAdjacentHTML('beforeend', path);
+		//renderpath
 	}
 	
 	
@@ -157,14 +178,18 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		document.querySelector(el+ ' .'+arrLabels[k]).innerHTML = '';
 		
 		var allSpanInY = '';
+		
+		
 		for(var i = x_start; i < x_end - 1; i++) {
 			
-			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
+			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><g><line stroke-linecap="round"  x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%"><animate attributeName="y1" from="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" to="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" dur="1s" fill="freeze" begin="indefinite"/> <animate attributeName="y2" from="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" to="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" dur="1s" fill="freeze" begin="indefinite" /></line></g></svg></span>';
+			  
 		}
 		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
+		
 	}
 	
-	console.log(x_end);
+	
 }
 
 function renderWrapperBar(el, x_start, x_end) {
@@ -177,6 +202,10 @@ function renderWrapperBar(el, x_start, x_end) {
 		div.className = 'y ' + arrLabels[k];
 		document.querySelector(el + ' .' + DOM.subInBar).appendChild(div);
 	}
+	//forpath
+	var div = document.createElement('div');
+	div.className = 'mypath';
+	document.querySelector(el + ' .' + DOM.subInBar).appendChild(div);	
 }
 
 
@@ -235,13 +264,25 @@ function hideUncheked(i) {
 
 
 function setEventListeners(ch) {
+	
+	//
+	var night = false;
+	document.querySelector('.switch').addEventListener('click', function() {
+		document.querySelector('body').classList.toggle('night');
+		if(!night) {this.innerHTML = 'Switch to Day mode'; night = true;}
+		else {this.innerHTML = 'Switch to Night mode'; night = false;}
+	});
+	//
+	
 	ch.forEach(function(i) {
-		i.addEventListener('change', function(e) {			
-			hideUncheked(i);
-			renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), true);
-			renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), false);
-			generateVertGrid(state.getmax());
-		});
+		//i.addEventListener('change', function(e) {			
+		//
+		//	i.nextSibling.classList.toggle('noneChecked');
+		//	hideUncheked(i);
+		//	renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), true);
+		//	renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), false);
+		//	generateVertGrid(state.getmax());
+	//});
 	});
 	
 	//
@@ -263,7 +304,7 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
-	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX = arrDates.length, optimalDatesPerWidth;
+	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX = arrDates.length, optimalDatesPerWidth, canAnimateY;
 
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
@@ -279,6 +320,7 @@ function setEventListeners(ch) {
 		
 		//for ALL
 		optimalDatesPerWidth = Math.floor(elBigBar.offsetWidth / 70);
+		canAnimateY = true;
 	});	
 	
 	
@@ -373,14 +415,98 @@ function setEventListeners(ch) {
 			}
 		}
 		
+
+	
+		
+		curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked()));
+
+		generateVertGrid(curMax);
+
+		//console.log(DOM.bigBar);
+
+		
+
+	//if(canAnimateY) {
+	//canAnimateY = true;
+	//	setTimeout(function() {
+	
+	for(var k = 0; k < numberOfChartsY; k++) {
+
+for(var i = 0; i < chartLength - 1; i++) {
+	
+	var curSpan = DOM.bigBar + ' .y'+k+' span[data-id="'+i+'"]';
+	document.querySelector(curSpan + ' .' + DOM.yn_dot).style.bottom = +getCurrentYProportion(yDataArr[k][i], curMax)+'%';
+	
+	
+	
+	document.querySelector(curSpan + ' line').setAttribute('y1', 100-getCurrentYProportion(yDataArr[k][i], curMax)+'%');
+	document.querySelector(curSpan + ' line').setAttribute('y2', 100-getCurrentYProportion(yDataArr[k][i+1], curMax)+'%');
+
+	var minusPozY1 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y1').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i], curMax));
+	//var minusPozY2 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y2').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i+1], curMax));	
+	//
+	//
+	//var lineY1 = document.querySelector(curSpan + ' line animate[attributeName="y1"]');
+	//var lineY2 = document.querySelector(curSpan + ' line animate[attributeName="y2"]');
+	////
+	//var curY1 = lineY1.getAttribute('to');
+	//var curY2 = lineY2.getAttribute('to');
+	////
+	//var newValY1 = (100-getCurrentYProportion(yDataArr[k][i], curMax))+'%';
+	//var newValY2 = (100 - getCurrentYProportion(yDataArr[k][i+1], curMax))+'%';
+	//
+	//console.log(`
+	//	${curY1} curY1
+	//	${curY2} curY2
+	//	${newValY1} newValY1
+	//	${newValY2} newValY2
+	//`);
+		
+		
+		//
+		//lineY1.setAttribute('from', curY1);
+		//lineY2.setAttribute('from', curY2);	
+		//lineY1.setAttribute('to', newValY1);
+		//lineY2.setAttribute('to', newValY2);
+		////
+		//document.querySelector(curSpan + ' line animate[attributeName="y1"]').beginElement();
+		//document.querySelector(curSpan + ' line animate[attributeName="y2"]').beginElement();
+		
+	//
+	
+	//console.log(`y1 ${k} ${i} ${document.querySelector(curSpan + ' line').getAttribute('y1')}`);
+	//console.log(`y2 ${k} ${i} ${document.querySelector(curSpan + ' line').getAttribute('y2')}`);
+	
+	//document.querySelector(curSpan).style.transform = "translate(0,"+ -10+"%)";
+	//console.log(minusPozY1);
+	//console.log(minusPozY2);
+	
+	//
+	//allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
+}
+//document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
+}//for k	
+		
+	//	}, 0);
+	//}
+	
+	
+
+
+//
+
+		//console.log(`
+		//	${curMax}
+		//`);
+
 		
 		//IMPORTANT DLA OTLADKI
-		console.log(`
-			${leftStartCurPozX} - left
-			${numberCurX} - center
-			${rightStartCurX} - right
-			${optimalDatesPerWidth} - optimalDatesPerWidth
-		`);
+		//console.log(`
+		//	${leftStartCurPozX} - left
+		//	${numberCurX} - center
+		//	${rightStartCurX} - right
+		//	${optimalDatesPerWidth} - optimalDatesPerWidth
+		//`);
 	
 	}
 //	
@@ -497,7 +623,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 1;
+var numberData = 3;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
@@ -557,7 +683,7 @@ function initScrolls() {
 	
 	//initDates
 	var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
-	console.log(optimalDatesPerWidth);
+	//console.log(optimalDatesPerWidth);
 	
 	var countAllX = arrDates.length;
 	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));

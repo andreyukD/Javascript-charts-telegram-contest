@@ -1,19 +1,51 @@
-body {font-family:'PT Sans',sans-serif;}
-* {padding: 0;box-sizing:border-box;margin:0;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(221,231,237,.4)}70%{box-shadow:0 0 0 35px rgba(221,231,237,.4)}100%{box-shadow:0 0 0 15px rgba(221,231,237,.4)}}
+
+.switch {
+	text-align:center;
+	color:#108be3;
+	margin:20px 0;
+	font-size:16px;
+	cursor:pointer;
+}
+
+/*
+	vertical line 3b4a5a
+*/
+
+
+body.night, body.night .noneChecked i {background:#242f3e !important;}
+body.night .followers {color:#fff;}
+body.night .slider_chart {border-color:#40566b;background:rgba(31,42,56);}
+body.night .smallBar {border-color:#40566b;}
+body.night .checkboxLineY {border-color:#344658;}
+body.night .vert span i, body.night .hor span i, body.night .vert::after {color:#546778;}
+body.night .vert span {border-color:#293544;}
+body.night .sub {border-color:#293544;}
+body.night .slider_chart .resizers .resizer {background:#40566b;}
+body.night label.checkboxLineY span {color:#fff;}
+body.night .slider_chart_wrap {border-color:rgba(31,42,56);background:rgba(36,47,62);}
+
+.mypath {left:0;top:0;position:absolute;width:100%;height:100%;}
+.mypath svg {width:100%;height:100%;}
+
+body {font-family:sans-serif;font-size:14px;}
+* {padding: 0;box-sizing:border-box;margin:0;line-height:1;}
 .wrapBigBar {overflow:hidden;margin-bottom: 0px;}
 
-.wrapper {margin:0 auto;width: 500px;max-width:100%;padding:0 15px;}
+.wrapper {margin:0 auto;width: 1000px;max-width:100%;padding:0 15px;}
 
 .bigBar .sub {width:100%;}
 .smallBar, .bigBar {display:flex;position:relative;}
 .smallBar .sub, .bigBar .sub {left:0;top:0;position:absolute;width:100%;height:100%;}
-.smallBar span, .bigBar span {position:relative;width: 100%;}
+.smallBar span, .bigBar span {position:relative;width: 100%;transition:all 1s;}
 
-.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);font-size:9px;}
+.smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);font-size:9px;transition:all 1s;border-radius:50%;}
 
 .followers {font-weight:700;margin-bottom:20px;margin-top: 20px;color:#222222;font-size:20px;}
 
-
+.slider_chart_wrap {background:rgba(245,249,251);z-index:3;}
+.slider_chart {background:#fff;}
+.wrapSmallNDrag {z-index:10;pointer-events:none;}
 
 .y {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;}
 .y.hide {display:none;}
@@ -42,8 +74,6 @@ body {font-family:'PT Sans',sans-serif;}
 .sub {border-bottom:1px solid #F2F4F5;}
 .vert::after {content:'0';position:absolute;bottom: 5px;left: 0;color:#96A2AA;}
 
-
-
 .slider_chart .resizers{width: 100%;height: 100%;}
 .slider_chart .resizers .resizer{
 	width: 10px;
@@ -51,6 +81,7 @@ body {font-family:'PT Sans',sans-serif;}
 	background: #DDE7ED;
 	position: absolute;
 	box-sizing:border-box;
+	opacity:0.7;
 }
 
 .slider_chart .resizers .resizer.bottom-left {
@@ -75,5 +106,61 @@ body {font-family:'PT Sans',sans-serif;}
 }
 
 .checkBoxWrap {
-	margin-top: 30px;
+	margin-top: 25px;
+	display:flex;
 }
+
+/**/
+
+label.checkboxLineY:hover {}
+label.checkboxLineY:hover svg {animation:pulse 1s;}
+
+label.checkboxLineY {
+	border:2px solid #F2F4F5;
+	padding:7px 10px;
+	border-radius:25px;
+	margin-right:20px;
+	font-size:18px;
+	display:flex;
+	align-items:center;
+}
+label.checkboxLineY input {display:none;}
+
+label.checkboxLineY span {
+	position:relative;
+	padding-left:40px;
+	padding-right: 5px;
+	height:30px;
+	display:flex;
+	align-items:center;
+}
+
+label.checkboxLineY i {
+	left:0;
+	top:50%;
+	transform:translateY(-50%);
+	width:30px;
+	height:100%;
+	border-radius:50%;
+	display:inline-block;
+	margin-right:10px;
+	position:absolute;
+	font-style:normal;
+	border:3px solid;
+	transition: all .5s;
+}
+
+.noneChecked i {background:#fff !important;}
+.noneChecked svg {transform:scale(0);}
+
+label.checkboxLineY svg {transform-origin:center;transition: all .5s;}
+label.checkboxLineY path {
+	stroke-linejoin:round;
+	stroke-linecap:round;
+	stroke:#fff;
+	stroke-width:9;
+	fill:none;
+	
+}
+
+label.checkboxLineY svg {border-radius:50%;}
