@@ -169,7 +169,7 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 		
 		var strWithDataTooltip = '<div class="tooltipWrapY">';
 		for(var k = 0; k < numberOfChartsY; k++) {
-			strWithDataTooltip += '<div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+yDataArr[k][i]+'</div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+arrLabels[k]+'</div>';
+			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'"><strong>'+yDataArr[k][i]+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+arrLabels[k]+'</div></div>';
 		}
 		strWithDataTooltip += '</div>';		
 		
@@ -633,7 +633,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 3;
+var numberData = 0;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
