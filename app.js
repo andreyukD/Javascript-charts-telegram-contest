@@ -14,9 +14,7 @@
 //  console.log(json); // this will log out the json object
 //});
 
-//https://gist.github.com/ManadayM/64d65825da97ffd994b4
 function prettyDate(epoch, dateFormat){
-	//TODO: add args validations here in future..
 	var shortMonths = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
 	var longMonths  = 'January_Febrary_March_April_May_June_July_August_September_Octeber_November_December'.split('_');
 	
@@ -25,7 +23,6 @@ function prettyDate(epoch, dateFormat){
 	
 	var _df 	= dateFormat;
 	
-	// convert epoch date to date object
 	var dt 	= new Date(epoch);
 	
 	var	date	= dt.getDate(),
@@ -37,52 +34,42 @@ function prettyDate(epoch, dateFormat){
 		mins	= dt.getMinutes(),
 		secs	= dt.getSeconds();
 	
-	// year
 	if (_df && _df.indexOf('yyyy') != -1) {
 		_df = _df.replace('yyyy', year);
 	}
 	
-	// day of week in long format e.g. Monday
 	if (_df && _df.indexOf('DDDD') != -1) {
 		_df = _df.replace('DDDD', longDays[day]);
 	}
 	
-	// day of week in short format e.g. Mon
 	if (_df && _df.indexOf('DDD') != -1) {
 		_df = _df.replace('DDD', shortDays[day]);
 	}
 	
-	// date of the month
 	if (_df && _df.indexOf('dd') != -1) {
 		_df = _df.replace('dd', date < 10 ? ('0' + date) : date);
 	}
 	
-	// Month of the year in long format e.g. January
 	if (_df && _df.indexOf('MMMM') != -1) {
 		_df = _df.replace('MMMM', longMonths[month]);
 	}
 	
-	// Month of the year in short format e.g. Jan
 	if (_df && _df.indexOf('MMM') != -1) {
 		_df = _df.replace('MMM', shortMonths[month]);
 	}
 	
-	// Month of the year in numeric format e.g. 01
 	if (_df && _df.indexOf('MM') != -1) {
 		_df = _df.replace('MM', (month + 1) < 10 ? ('0' + (month + 1)) : (month + 1));
 	}
 	
-	// hours
 	if (_df && _df.indexOf('hh') != -1) {
 		_df = _df.replace('hh', hour < 10 ? ('0' + hour) : hour);
 	}
 	
-	// minutes
 	if (_df && _df.indexOf('mm') != -1) {
 		_df = _df.replace('mm', mins < 10 ? ('0' + mins) : mins);
 	}
 	
-	// seconds
 	if (_df && _df.indexOf('ss') != -1) {
 		_df = _df.replace('ss', secs < 10 ? ('0' + secs) : secs);
 	}
@@ -95,7 +82,6 @@ function Point(x,y) {
 	this.y = y;
 }
 
-//https://stackoverflow.com/questions/10564441/how-to-find-the-max-min-of-a-nested-array-in-javascript
 function arrmax(arrs) {
     if (!arrs || !arrs.length) return undefined;
     var max = Math.max.apply(window, arrs[0]), m,
@@ -149,7 +135,6 @@ function getCurrentYProportion(currentY, max) {
 	return currentY * 100 / max;
 }
 
-
 function renderPart(el, x_start, x_end, max, renderAdditems) {
 	
 	if(renderAdditems) {
@@ -160,13 +145,12 @@ function renderPart(el, x_start, x_end, max, renderAdditems) {
 	
 		//render Path 
 		//var path='<svg viewBox ="0 0 100% 100%" width="100%" height="100%"><path id="lineAB" d="M 0,0 L 100,100 l 5,15 " stroke="blue" stroke-width="3" fill="none" /></svg>';
+		
 		//render X dates
-		
-
-		
 		var allSpanX = '';
 		for(var i = x_start; i < x_end - 1; i++) {
 		
+		var strWithDataTooltip = '';
 		var strWithDataTooltip = '<div class="tooltipWrapY">';
 		for(var k = 0; k < numberOfChartsY; k++) {
 			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'"><strong>'+yDataArr[k][i]+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData)+'">'+arrLabels[k]+'</div></div>';
@@ -284,17 +268,7 @@ function setEventListeners(ch) {
 	});
 	//
 	
-	ch.forEach(function(i) {
-		//i.addEventListener('change', function(e) {			
-		//
-		//	i.nextSibling.classList.toggle('noneChecked');
-		//	hideUncheked(i);
-		//	renderPart(DOM.bigBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), true);
-		//	renderPart(DOM.smallBar, 0, chartLength, arrmax(getMax(0,chartLength,getActiveChecked())), false);
-		//	generateVertGrid(state.getmax());
-	//});
-	});
-	
+
 	//
 	
 	var elSlidMove = document.querySelector(DOM.slider_chart);
@@ -371,7 +345,6 @@ function setEventListeners(ch) {
 		
 	}
 	
-	//https://learn.javascript.ru/coordinates-document#getCoords
 	function getCoords(elem) {
 		var box = elem.getBoundingClientRect();
 
@@ -415,12 +388,12 @@ function setEventListeners(ch) {
 			var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
 			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
 				if(selector) {
-					selector.style.display = "block";
+					selector.classList.add('displayHorLabelDate');
 				}
 			}
 			else {
 				if(selector) {
-					selector.style.display = "none";
+					selector.classList.remove('displayHorLabelDate');
 				}
 			}
 		}
@@ -435,10 +408,27 @@ function setEventListeners(ch) {
 		//console.log(DOM.bigBar);
 
 		
+	function animateLine() {
+		
 
-	//if(canAnimateY) {
-	//canAnimateY = true;
-	//	setTimeout(function() {
+	if(canAnimateY) {
+	canAnimateY = false;
+	setTimeout(function() {
+	canAnimateY = true;
+	
+	var leftOfSlid = parseFloat(element.style.left.replace('px',''));
+	var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
+		
+	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));	
+	var newMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked()));
+	console.log(`
+		${curMax} curMax,
+		${newMax} newMax
+	`);
+	
+	if(curMax != newMax) {}
+	}, 1000);//1s - time to animation
+		
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
 
@@ -449,21 +439,21 @@ for(var i = 0; i < chartLength - 1; i++) {
 	
 	
 	
-	document.querySelector(curSpan + ' line').setAttribute('y1', 100-getCurrentYProportion(yDataArr[k][i], curMax)+'%');
-	document.querySelector(curSpan + ' line').setAttribute('y2', 100-getCurrentYProportion(yDataArr[k][i+1], curMax)+'%');
+	//document.querySelector(curSpan + ' line').setAttribute('y1', 100-getCurrentYProportion(yDataArr[k][i], curMax)+'%');
+	//document.querySelector(curSpan + ' line').setAttribute('y2', 100-getCurrentYProportion(yDataArr[k][i+1], curMax)+'%');
 
-	var minusPozY1 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y1').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i], curMax));
+	//var minusPozY1 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y1').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i], curMax));
 	//var minusPozY2 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y2').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i+1], curMax));	
 	//
 	//
-	//var lineY1 = document.querySelector(curSpan + ' line animate[attributeName="y1"]');
-	//var lineY2 = document.querySelector(curSpan + ' line animate[attributeName="y2"]');
+	var lineY1 = document.querySelector(curSpan + ' line animate[attributeName="y1"]');
+	var lineY2 = document.querySelector(curSpan + ' line animate[attributeName="y2"]');
+	//
+	var curY1 = lineY1.getAttribute('to');
+	var curY2 = lineY2.getAttribute('to');
 	////
-	//var curY1 = lineY1.getAttribute('to');
-	//var curY2 = lineY2.getAttribute('to');
-	////
-	//var newValY1 = (100-getCurrentYProportion(yDataArr[k][i], curMax))+'%';
-	//var newValY2 = (100 - getCurrentYProportion(yDataArr[k][i+1], curMax))+'%';
+	var newValY1 = (100-getCurrentYProportion(yDataArr[k][i], curMax))+'%';
+	var newValY2 = (100 - getCurrentYProportion(yDataArr[k][i+1], curMax))+'%';
 	//
 	//console.log(`
 	//	${curY1} curY1
@@ -474,13 +464,13 @@ for(var i = 0; i < chartLength - 1; i++) {
 		
 		
 		//
-		//lineY1.setAttribute('from', curY1);
-		//lineY2.setAttribute('from', curY2);	
-		//lineY1.setAttribute('to', newValY1);
-		//lineY2.setAttribute('to', newValY2);
-		////
-		//document.querySelector(curSpan + ' line animate[attributeName="y1"]').beginElement();
-		//document.querySelector(curSpan + ' line animate[attributeName="y2"]').beginElement();
+		lineY1.setAttribute('from', curY1);
+		lineY2.setAttribute('from', curY2);	
+		lineY1.setAttribute('to', newValY1);
+		lineY2.setAttribute('to', newValY2);
+		//
+		document.querySelector(curSpan + ' line animate[attributeName="y1"]').beginElement();
+		document.querySelector(curSpan + ' line animate[attributeName="y2"]').beginElement();
 		
 	//
 	
@@ -497,8 +487,13 @@ for(var i = 0; i < chartLength - 1; i++) {
 //document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
 }//for k	
 		
-	//	}, 0);
-	//}
+	
+	}//ifCanAnimate
+	
+	} //animateLime
+	
+	//animateLine();
+	
 	
 	
 
@@ -594,6 +589,99 @@ for(var i = 0; i < chartLength - 1; i++) {
     function stopResizeRight() {
       window.removeEventListener('mousemove', resizeRight)
     }	
+	
+	
+	
+	ch.forEach(function(g) {
+		g.addEventListener('change', function(e) {			
+		//
+			g.nextSibling.classList.toggle('noneChecked');
+			hideUncheked(g);
+			
+			updateInfoAboutSlider();
+
+			var countAllX = arrDates.length;	
+			var leftOfSlid = parseFloat(element.style.left.replace('px',''));
+			var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
+			
+			var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));	
+			var rightStartCurX = leftStartCurPozX + numberCurX;		
+
+			var curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked()));
+			generateVertGrid(curMax);
+			
+			//ok
+			
+			
+		
+			var data = [];
+			
+			var numberAll = 0;
+			var tiksAll = [];
+			
+			for(let k = 0; k < numberOfChartsY; k++) {
+				data[k]=[];
+				data[k].curSpan=[];
+				data[k].line=[];
+				data[k].curY1=[];
+				data[k].curY2=[];
+				data[k].newValY1=[];
+				data[k].newValY2=[];
+				data[k].minus1=[];
+				data[k].minus2=[];
+				data[k].gg=[];
+				data[k].time=[];
+				
+				for(let i = 0; i < chartLength - 1; i++) {
+				
+				//tiksAll[numberAll] = numberAll;
+				//numberAll++;
+				
+				var curSpan = DOM.bigBar + ' .y'+k+' span[data-id="'+i+'"]';
+				//document.querySelector(curSpan + ' .' + DOM.yn_dot).style.bottom = +getCurrentYProportion(yDataArr[k][i], curMax)+'%';
+				data[k].curSpan[i] = curSpan;
+				
+				var line = document.querySelector(curSpan + ' line');
+				data[k].line[i] = line;
+				//
+				var curY1 = parseFloat(line.getAttribute('y1').replace('%',''));
+				data[k].curY1[i] = curY1;
+				var curY2 = parseFloat(line.getAttribute('y2').replace('%',''));
+				data[k].curY2[i] = curY2;
+				////
+				var newValY1 = (100-getCurrentYProportion(yDataArr[k][i], curMax));
+				data[k].newValY1[i] = newValY1;
+				var newValY2 = (100 - getCurrentYProportion(yDataArr[k][i+1], curMax));		
+				data[k].newValY2[i] = newValY2;
+				//
+				var minus1 = newValY1 - curY1;
+				data[k].minus1[i] = minus1;
+				var minus2 = newValY2 - curY2;
+				data[k].minus2[i] = minus2;
+				//
+				//console.log(minus1);
+				//console.log(minus2);
+				
+				
+				data[k].gg[i] = 0;
+				data[k].time[i] = setInterval(function() {
+					data[k].gg[i]++;
+				
+					//(data[k].curY1[i] + (data[k].minus1[i] / 10)*data[k].gg[i])
+					document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y1', (data[k].curY1[i] + (data[k].minus1[i] / 5)*data[k].gg[i])+'%');
+					document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y2', (data[k].curY2[i] + (data[k].minus2[i] / 5)*data[k].gg[i])+'%');
+				
+					if (data[k].gg[i] >= 5) {clearInterval(data[k].time[i]);}
+				}, 0);
+				
+					
+				}//for i
+			}//for k	
+							
+
+		});
+	});
+		
 }	
 
 
@@ -633,7 +721,7 @@ function generateHorGrid(x_start, x_end) {
 	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
 }
 //////////////////////////////////////////////////////////////////////////////////////
-var numberData = 0;
+var numberData = 3;
 var chart = JSON.parse(chart);
 var chartLength = chart[numberData].columns[0].length - 1;//10
 var numberOfChartsY = chart[numberData].columns.length - 1;//2
@@ -678,10 +766,8 @@ var State = function(cur_x_start, cur_x_end) {
 }
 
 var state = new State(0, chartLength);
-//console.log(state.getmax());
 //
-generateVertGrid(state.getmax());
-//generateHorGrid(state.cur_x_start, state.cur_x_end);
+
 
 //
 function initScrolls() {
@@ -705,16 +791,18 @@ function initScrolls() {
 		var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
 		if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
 			if(selector) {
-				selector.style.display = "block";
+				selector.classList.add('displayHorLabelDate');
 			}
 		}
 		else {
 			if(selector) {
-				selector.style.display = "none";
+				selector.classList.remove('displayHorLabelDate');
 			}
 		}
 	}
 	//initDates
-		
+	
+	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked())));
+	//initY
 }
 initScrolls();
