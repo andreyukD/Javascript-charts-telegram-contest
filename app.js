@@ -258,7 +258,7 @@ function hideUncheked(i) {
 
 
 function setEventListeners(ch) {
-	
+	var canAnimate = true;
 	//
 	var night = false;
 	document.querySelector('.switch').addEventListener('click', function() {
@@ -288,7 +288,7 @@ function setEventListeners(ch) {
 	var widthSlider, sliderAllWidth;
 	var handler = moveSlider.bind(this);
 	
-	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX = arrDates.length, optimalDatesPerWidth, canAnimateY;
+	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX = arrDates.length, optimalDatesPerWidth;
 
 
 	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
@@ -304,7 +304,6 @@ function setEventListeners(ch) {
 		
 		//for ALL
 		optimalDatesPerWidth = Math.floor(elBigBar.offsetWidth / 70);
-		canAnimateY = true;
 	});	
 	
 	
@@ -360,6 +359,8 @@ function setEventListeners(ch) {
 		
 		infoCurentZoom();
 		
+		goFlex();
+		
 		var x = e.pageX - shiftX - elSlidMove.parentNode.offsetLeft;
 		
 		if(x <= 0) {x = 0;}
@@ -398,120 +399,10 @@ function setEventListeners(ch) {
 			}
 		}
 		
-
-	
 		
 		curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked()));
-
 		generateVertGrid(curMax);
 
-		//console.log(DOM.bigBar);
-
-		
-	function animateLine() {
-		
-
-	if(canAnimateY) {
-	canAnimateY = false;
-	setTimeout(function() {
-	canAnimateY = true;
-	
-	var leftOfSlid = parseFloat(element.style.left.replace('px',''));
-	var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
-		
-	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));	
-	var newMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked()));
-	console.log(`
-		${curMax} curMax,
-		${newMax} newMax
-	`);
-	
-	if(curMax != newMax) {}
-	}, 1000);//1s - time to animation
-		
-	
-	for(var k = 0; k < numberOfChartsY; k++) {
-
-for(var i = 0; i < chartLength - 1; i++) {
-	
-	var curSpan = DOM.bigBar + ' .y'+k+' span[data-id="'+i+'"]';
-	document.querySelector(curSpan + ' .' + DOM.yn_dot).style.bottom = +getCurrentYProportion(yDataArr[k][i], curMax)+'%';
-	
-	
-	
-	//document.querySelector(curSpan + ' line').setAttribute('y1', 100-getCurrentYProportion(yDataArr[k][i], curMax)+'%');
-	//document.querySelector(curSpan + ' line').setAttribute('y2', 100-getCurrentYProportion(yDataArr[k][i+1], curMax)+'%');
-
-	//var minusPozY1 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y1').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i], curMax));
-	//var minusPozY2 = parseFloat(document.querySelector(curSpan + ' line').getAttribute('y2').replace('%','')) - (100-getCurrentYProportion(yDataArr[k][i+1], curMax));	
-	//
-	//
-	var lineY1 = document.querySelector(curSpan + ' line animate[attributeName="y1"]');
-	var lineY2 = document.querySelector(curSpan + ' line animate[attributeName="y2"]');
-	//
-	var curY1 = lineY1.getAttribute('to');
-	var curY2 = lineY2.getAttribute('to');
-	////
-	var newValY1 = (100-getCurrentYProportion(yDataArr[k][i], curMax))+'%';
-	var newValY2 = (100 - getCurrentYProportion(yDataArr[k][i+1], curMax))+'%';
-	//
-	//console.log(`
-	//	${curY1} curY1
-	//	${curY2} curY2
-	//	${newValY1} newValY1
-	//	${newValY2} newValY2
-	//`);
-		
-		
-		//
-		lineY1.setAttribute('from', curY1);
-		lineY2.setAttribute('from', curY2);	
-		lineY1.setAttribute('to', newValY1);
-		lineY2.setAttribute('to', newValY2);
-		//
-		document.querySelector(curSpan + ' line animate[attributeName="y1"]').beginElement();
-		document.querySelector(curSpan + ' line animate[attributeName="y2"]').beginElement();
-		
-	//
-	
-	//console.log(`y1 ${k} ${i} ${document.querySelector(curSpan + ' line').getAttribute('y1')}`);
-	//console.log(`y2 ${k} ${i} ${document.querySelector(curSpan + ' line').getAttribute('y2')}`);
-	
-	//document.querySelector(curSpan).style.transform = "translate(0,"+ -10+"%)";
-	//console.log(minusPozY1);
-	//console.log(minusPozY2);
-	
-	//
-	//allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><line x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" /></svg></span>';
-}
-//document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
-}//for k	
-		
-	
-	}//ifCanAnimate
-	
-	} //animateLime
-	
-	//animateLine();
-	
-	
-	
-
-
-//
-
-		//console.log(`
-		//	${curMax}
-		//`);
-
-		
-		//IMPORTANT DLA OTLADKI
-		//console.log(`
-		//	${leftStartCurPozX} - left
-		//	${numberCurX} - center
-		//	${rightStartCurX} - right
-		//	${optimalDatesPerWidth} - optimalDatesPerWidth
-		//`);
 	
 	}
 //	
@@ -524,6 +415,7 @@ for(var i = 0; i < chartLength - 1; i++) {
 	}
 
 	function resizeLeft(e) {
+	goFlex();
 	updateInfoAboutSlider();
 	changeSubWidth();
 	
@@ -555,6 +447,7 @@ for(var i = 0; i < chartLength - 1; i++) {
     }
 	
 	function resizeRight(e) {
+	goFlex();
 	updateInfoAboutSlider();
 	changeSubWidth();	
 	
@@ -588,7 +481,7 @@ for(var i = 0; i < chartLength - 1; i++) {
 	
     function stopResizeRight() {
       window.removeEventListener('mousemove', resizeRight)
-    }	
+    }
 	
 	
 	
@@ -600,6 +493,15 @@ for(var i = 0; i < chartLength - 1; i++) {
 			
 			updateInfoAboutSlider();
 
+			goFlex();
+		
+		});
+	});
+	
+	//
+	
+	function goFlex() {
+		if(canAnimate) {
 			var countAllX = arrDates.length;	
 			var leftOfSlid = parseFloat(element.style.left.replace('px',''));
 			var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
@@ -611,13 +513,8 @@ for(var i = 0; i < chartLength - 1; i++) {
 			generateVertGrid(curMax);
 			
 			//ok
-			
-			
 		
 			var data = [];
-			
-			var numberAll = 0;
-			var tiksAll = [];
 			
 			for(let k = 0; k < numberOfChartsY; k++) {
 				data[k]=[];
@@ -633,9 +530,6 @@ for(var i = 0; i < chartLength - 1; i++) {
 				data[k].time=[];
 				
 				for(let i = 0; i < chartLength - 1; i++) {
-				
-				//tiksAll[numberAll] = numberAll;
-				//numberAll++;
 				
 				var curSpan = DOM.bigBar + ' .y'+k+' span[data-id="'+i+'"]';
 				//document.querySelector(curSpan + ' .' + DOM.yn_dot).style.bottom = +getCurrentYProportion(yDataArr[k][i], curMax)+'%';
@@ -660,27 +554,40 @@ for(var i = 0; i < chartLength - 1; i++) {
 				data[k].minus2[i] = minus2;
 				//
 				//console.log(minus1);
-				//console.log(minus2);
-				
-				
-				data[k].gg[i] = 0;
-				data[k].time[i] = setInterval(function() {
-					data[k].gg[i]++;
-				
-					//(data[k].curY1[i] + (data[k].minus1[i] / 10)*data[k].gg[i])
-					document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y1', (data[k].curY1[i] + (data[k].minus1[i] / 5)*data[k].gg[i])+'%');
-					document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y2', (data[k].curY2[i] + (data[k].minus2[i] / 5)*data[k].gg[i])+'%');
-				
-					if (data[k].gg[i] >= 5) {clearInterval(data[k].time[i]);}
-				}, 0);
-				
+				//console.log(minus2);			
 					
 				}//for i
 			}//for k	
 							
-
-		});
-	});
+							
+			
+			
+			function animate() {
+				canAnimate = false;
+				var gg = 0;
+				var ii = setInterval(function(){
+					// do your thing
+						for(var k = 0; k < numberOfChartsY; k++) {	
+						for(var i = 0; i < chartLength - 1; i++) {
+							document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y1', (data[k].curY1[i] + (data[k].minus1[i] / 15)*gg)+'%');
+							document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y2', (data[k].curY2[i] + (data[k].minus2[i] / 15)*gg)+'%');
+							
+							
+						}}
+					//
+					gg++;
+					if(gg === 16) {
+						clearInterval(ii);
+						canAnimate = true;
+					}
+				}, 1);
+			}
+			
+			
+				animate();
+			}
+			
+		}//goflex
 		
 }	
 
@@ -750,7 +657,7 @@ var checkboxesArr = [].slice.call(checkboxes);
 setEventListeners(checkboxesArr);
 //
 var numberCurX = Math.round(arrDates.length / (document.querySelector(DOM.bigBar).offsetWidth / document.querySelector(DOM.slider_chart).offsetWidth));
-console.log(numberCurX);
+//console.log(numberCurX);
 var chartMaxYAll = arrmax(getMax(0,chartLength,getActiveChecked()));
 var chartMaxYPart = arrmax(getMax(0,numberCurX,getActiveChecked()));
 renderWrapperBar(DOM.bigBar, 0, chartLength);
