@@ -749,12 +749,14 @@ var checkboxes = document.querySelectorAll('.'+DOM.checkboxLineY+ ' input');
 var checkboxesArr = [].slice.call(checkboxes);
 setEventListeners(checkboxesArr);
 //
-//var chartMaxY = arrmax(yDataArr);
-var chartMaxY = arrmax(getMax(0,chartLength,getActiveChecked()));
+var numberCurX = Math.round(arrDates.length / (document.querySelector(DOM.bigBar).offsetWidth / document.querySelector(DOM.slider_chart).offsetWidth));
+console.log(numberCurX);
+var chartMaxYAll = arrmax(getMax(0,chartLength,getActiveChecked()));
+var chartMaxYPart = arrmax(getMax(0,numberCurX,getActiveChecked()));
 renderWrapperBar(DOM.bigBar, 0, chartLength);
 renderWrapperBar(DOM.smallBar, 0, chartLength);
-renderPart(DOM.smallBar, 0, chartLength, chartMaxY, false);
-renderPart(DOM.bigBar, 0, chartLength, chartMaxY, true);
+renderPart(DOM.smallBar, 0, chartLength, chartMaxYAll, false);
+renderPart(DOM.bigBar, 0, chartLength, chartMaxYPart, true);
 //
 var State = function(cur_x_start, cur_x_end) {
 	this.cur_x_start = cur_x_start;
