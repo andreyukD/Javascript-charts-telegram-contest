@@ -618,7 +618,7 @@ function generate(nr_chart) {
 	var wrapDom = '.w'+nr_chart+' ';
 
 	DOM = {
-		bigBar: wrap+'.bigBar',
+		bigBar: '.bigBar',
 		smallBar: '.smallBar',
 		yn_dot: 'simpleY',
 		checkboxLineY: 'checkboxLineY',
