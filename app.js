@@ -126,7 +126,7 @@ function createCheckboxes(numberOfChartsY, numberData, chart, arrLabels) {
 	for(var i = 0; i<numberOfChartsY; i++) {
 		var color = getColorByLabel(arrLabels[i], numberData, chart);
 		var string='<label class="'+DOM.checkboxLineY+'"><input data-number-checkbox="'+i+'" type="checkbox" checked><span><i style="background:'+color+';border-color:'+color+';"><svg viewBox="0 0 100 100"><path id="ar'+i+'" d="M 25,55 L 45,70 L 75,35 "/></svg></i>'+getNameByLabel(arrLabels[i], numberData, chart)+'</span></label>';
-		document.querySelector(DOM.checkboxWrap).insertAdjacentHTML('beforeend', string);
+		document.querySelector(wrapDom+DOM.checkboxWrap).insertAdjacentHTML('beforeend', string);
 	}
 }
 
@@ -139,8 +139,8 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 	if(renderAdditems) {
 	
 		var divHorWrap = document.createElement('div');
-		divHorWrap.className = 'hor';	
-		document.querySelector(el + ' .'+DOM.subInBar).appendChild(divHorWrap);
+		divHorWrap.className = DOM.hor;	
+		document.querySelector(wrapDom+el + ' .'+DOM.subInBar).appendChild(divHorWrap);
 	
 		//render Path 
 		//var path='<svg viewBox ="0 0 100% 100%" width="100%" height="100%"><path id="lineAB" d="M 0,0 L 100,100 l 5,15 " stroke="blue" stroke-width="3" fill="none" /></svg>';
@@ -150,17 +150,17 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 		for(var i = x_start; i < x_end - 1; i++) {
 		
 		var strWithDataTooltip = '';
-		var strWithDataTooltip = '<div class="tooltipWrapY">';
+		var strWithDataTooltip = '<div class="'+DOM.tooltipWrapY+'">';
 		for(var k = 0; k < numberOfChartsY; k++) {
 			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+yDataArr[k][i]+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
 		}
 		strWithDataTooltip += '</div>';		
 		
 			var g = prettyDate(arrDates[i], 'MMM dd');
-			allSpanX += '<span data-id='+i+'><div class="data"><div class="d">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div><i>'+g+'</i></span>';
+			allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div><i>'+g+'</i></span>';
 		}
-		document.querySelector(el + ' '+DOM.horGridWrap).innerHTML = '';
-		document.querySelector(el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
+		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
+		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
 		//render X dates
 		//document.querySelector('.mypath').insertAdjacentHTML('beforeend', path);
 		//renderpath
@@ -168,17 +168,19 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 	
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
-		document.querySelector(el+ ' .'+arrLabels[k]).innerHTML = '';
+		document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).innerHTML = '';
 		
 		var allSpanInY = '';
 		
 		
 		for(var i = x_start; i < x_end - 1; i++) {
 			
-			allSpanInY += '<span data-id="'+i+'"><i class="'+DOM.yn_dot+'" style="bottom:'+getCurrentYProportion(yDataArr[k][i], max)+'%;"></i><svg><g><line stroke-linecap="round"  x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%"><animate attributeName="y1" from="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" to="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" dur="1s" fill="freeze" begin="indefinite"/> <animate attributeName="y2" from="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" to="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" dur="1s" fill="freeze" begin="indefinite" /></line></g></svg></span>';
+			//allSpanInY += '<span data-id="'+i+'"><svg><g><line stroke-linecap="round"  x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%"><animate attributeName="y1" from="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" to="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" dur="1s" fill="freeze" begin="indefinite"/> <animate attributeName="y2" from="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" to="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" dur="1s" fill="freeze" begin="indefinite" /></line></g></svg></span>';
+			
+			allSpanInY += '<span data-id="'+i+'"><svg><g><line stroke-linecap="round"  x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%"><animate attributeName="y1" from="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" to="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" dur="1s" fill="freeze" begin="indefinite"/> <animate attributeName="y2" from="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" to="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" dur="1s" fill="freeze" begin="indefinite" /></line></g></svg></span>';			
 			  
 		}
-		document.querySelector(el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
+		document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
 		
 	}
 	
@@ -188,17 +190,17 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 function renderWrapperBar(el, x_start, x_end, numberOfChartsY, arrLabels) {
 	var divSub = document.createElement('div');
 	divSub.className = DOM.subInBar;	
-	document.querySelector(el).appendChild(divSub);
+	document.querySelector(wrapDom+el).appendChild(divSub);
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
 		var div = document.createElement('div');
 		div.className = 'y ' + arrLabels[k];
-		document.querySelector(el + ' .' + DOM.subInBar).appendChild(div);
+		document.querySelector(wrapDom+el + ' .' + DOM.subInBar).appendChild(div);
 	}
 	//forpath
 	var div = document.createElement('div');
 	div.className = 'mypath';
-	document.querySelector(el + ' .' + DOM.subInBar).appendChild(div);	
+	document.querySelector(wrapDom+el + ' .' + DOM.subInBar).appendChild(div);	
 }
 
 
@@ -244,10 +246,10 @@ function getActiveChecked(checkboxesArr) {
 	return getAllChecked;	
 }
 //
-function hideUncheked(i) {		
+function hideUncheked(i, wrapDom) {		
 	var sel = 'y'+i.getAttribute('data-number-checkbox');
 	
-	var twoLines = document.querySelectorAll('.'+sel);
+	var twoLines = document.querySelectorAll(wrapDom+'.'+sel);
 	var twoLinessArr = [].slice.call(twoLines);
 	
 	twoLinessArr.forEach(function(i) {
@@ -256,17 +258,17 @@ function hideUncheked(i) {
 }
 
 
-function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX) {
+function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom) {
 	var canAnimate = true;
 	//
-	var elSlidMove = document.querySelector(DOM.slider_chart);
-	var elBigBar = document.querySelector(DOM.bigBar);
+	var elSlidMove = document.querySelector(wrapDom+DOM.slider_chart);
+	var elBigBar = document.querySelector(wrapDom+DOM.bigBar);
 	
 	var div = DOM.slider_chart;
-	var element = document.querySelector(div);
+	var element = document.querySelector(wrapDom+div);
 
-	var resizerLeft = document.querySelector(div + ' .resizer.bottom-left');
-	var resizerRight = document.querySelector(div + ' .resizer.bottom-right');
+	var resizerLeft = document.querySelector(wrapDom+div + ' '+DOM.resizerLeft);
+	var resizerRight = document.querySelector(wrapDom+div + ' '+DOM.resizerRight);
 
 	var minimum_size = 100;
 	var original_width = 0;
@@ -278,8 +280,8 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	
 	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX, optimalDatesPerWidth;
 
-	document.querySelector(DOM.slider_chart).addEventListener('mousedown', function(e) {
-		if(e.target.className !== 'resizer bottom-left' && e.target.className !== 'resizer bottom-right') {//чтобы не ездила когда я делаю ресайз
+	document.querySelector(wrapDom+DOM.slider_chart).addEventListener('mousedown', function(e) {
+		if(e.target.className !== DOM.resizerLeftClass && e.target.className !== DOM.resizerRightClass) {//чтобы не ездила когда я делаю ресайз
 		
 			coords = getCoords(elSlidMove);//чтобы высчитать сдвиг
 			shiftX = e.pageX - coords.left;		
@@ -306,7 +308,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 
 	resizerRight.addEventListener('mousedown', function(e) {
 	
-		coordsR = getCoords(document.querySelector('.resizer.bottom-right'));//чтобы высчитать сдвиг
+		coordsR = getCoords(document.querySelector(wrapDom+DOM.resizerRight));//чтобы высчитать сдвиг
 		shiftR = e.pageX - coordsR.left;
 	
 		helperInitResizers(e);
@@ -366,22 +368,22 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
 		//console.log(everyThisXToHide);
 		for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
-			var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
+			var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
 			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
 				if(selector) {
-					selector.classList.add('displayHorLabelDate');
+					selector.classList.add(DOM.displayHorLabelDate);
 				}
 			}
 			else {
 				if(selector) {
-					selector.classList.remove('displayHorLabelDate');
+					selector.classList.remove(DOM.displayHorLabelDate);
 				}
 			}
 		}
 		
 		
 		curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
-		generateVertGrid(curMax);
+		generateVertGrid(curMax, wrapDom);
 
 	
 	}
@@ -469,7 +471,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		g.addEventListener('change', function(e) {			
 		//
 			g.nextSibling.classList.toggle('noneChecked');
-			hideUncheked(g);
+			hideUncheked(g, wrapDom);
 			
 			updateInfoAboutSlider();
 
@@ -490,7 +492,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			var rightStartCurX = leftStartCurPozX + numberCurX;		
 
 			var curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
-			generateVertGrid(curMax);
+			generateVertGrid(curMax, wrapDom);
 			
 			//ok
 		
@@ -515,7 +517,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 				//document.querySelector(curSpan + ' .' + DOM.yn_dot).style.bottom = +getCurrentYProportion(yDataArr[k][i], curMax)+'%';
 				data[k].curSpan[i] = curSpan;
 				
-				var line = document.querySelector(curSpan + ' line');
+				var line = document.querySelector(wrapDom+curSpan + ' line');
 				data[k].line[i] = line;
 				//
 				var curY1 = parseFloat(line.getAttribute('y1').replace('%',''));
@@ -549,8 +551,8 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 					// do your thing
 						for(var k = 0; k < numberOfChartsY; k++) {	
 						for(var i = 0; i < chartLength - 1; i++) {
-							document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y1', (data[k].curY1[i] + (data[k].minus1[i] / 15)*gg)+'%');
-							document.querySelector(data[k].curSpan[i] + ' line').setAttribute('y2', (data[k].curY2[i] + (data[k].minus2[i] / 15)*gg)+'%');
+							document.querySelector(wrapDom+data[k].curSpan[i] + ' line').setAttribute('y1', (data[k].curY1[i] + (data[k].minus1[i] / 15)*gg)+'%');
+							document.querySelector(wrapDom+data[k].curSpan[i] + ' line').setAttribute('y2', (data[k].curY2[i] + (data[k].minus2[i] / 15)*gg)+'%');
 							
 							
 						}}
@@ -584,7 +586,7 @@ function getMax(x_start, x_end, whichActive, yDataArr) {
 	return tempArrActiveY;
 }
 
-function generateVertGrid(max) {
+function generateVertGrid(max, wrapDom) {
 	var roundMax = Math.ceil(max / 10) * 10
 	var part = roundMax / 5;
 	var str='';
@@ -592,30 +594,19 @@ function generateVertGrid(max) {
 		var hideFirst = i === 0 ? 'style="display:none;"' : '';
 		str += '<span><i '+hideFirst+'>'+(roundMax - part*i) +'</i></span>';
 	}
-	document.querySelector(DOM.vertGridWrap).innerHTML = '';
-	document.querySelector(DOM.vertGridWrap).insertAdjacentHTML('beforeend',str);
+	document.querySelector(wrapDom+DOM.vertGridWrap).innerHTML = '';
+	document.querySelector(wrapDom+DOM.vertGridWrap).insertAdjacentHTML('beforeend',str);
 }
-
-function generateHorGrid(x_start, x_end) {
-	var str='';
-	for(var i=0;i<5;i++) {
-		//todo - only 5 between dates
-		var g = prettyDate(arrDates[x_start], 'dd MMM');
-		str += '<span><i>'+g+'</i></span>';
-		x_start++;
-	}
-	document.querySelector(DOM.horGridWrap).innerHTML = '';
-	document.querySelector(DOM.horGridWrap).insertAdjacentHTML('beforeend',str);	
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-var DOM = {};
+var DOM, wrapDom;
 
-function generate(nr_chart) {
+function generate(nr_chart, heading) {
 	
-	var wrapDom = '.w'+nr_chart+' ';
+	//if(nr_chart === 0) {console.log(true);}
+	
+	wrapDom = '.w'+nr_chart+' ';
 
 	DOM = {
 		bigBar: '.bigBar',
@@ -627,12 +618,18 @@ function generate(nr_chart) {
 		horGridWrap: '.hor',
 		slider_chart: '.slider_chart',
 		subInBar: 'sub',
+		tooltipWrapY: 'tooltipWrapY',
+		data: 'data',
+		d: 'd',
+		resizerLeft: '.resizer.bottom-left',
+		resizerRight: '.resizer.bottom-right',
+		resizerLeftClass: 'resizer bottom-left',
+		resizerRightClass: 'resizer bottom-right',
+		displayHorLabelDate: 'displayHorLabelDate',
+		hor: 'hor',
 	}
 	
-	
-
-	if(nr_chart === 0) {console.log(true);}
-	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">Followers</div><div class="wrapGrids"><div class="vert"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div><hr>';
+	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="vert"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
 
 	document.querySelector('body').insertAdjacentHTML('beforeend', layout);
 	
@@ -653,13 +650,13 @@ function generate(nr_chart) {
 	generateCSS(sheet, arrLabels, numberOfChartsY, numberData, chart);
 	//
 	createCheckboxes(numberOfChartsY, numberData, chart, arrLabels);
-	var checkboxes = document.querySelectorAll('.'+DOM.checkboxLineY+ ' input');
+	var checkboxes = document.querySelectorAll(wrapDom+'.'+DOM.checkboxLineY+ ' input');
 	var checkboxesArr = [].slice.call(checkboxes);
 	
 	var countAllX = arrDates.length;
-	setEventListeners(checkboxesArr, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX);
+	setEventListeners(checkboxesArr, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom);
 	//
-	var numberCurX = Math.round(arrDates.length / (document.querySelector(DOM.bigBar).offsetWidth / document.querySelector(DOM.slider_chart).offsetWidth));
+	var numberCurX = Math.round(arrDates.length / (document.querySelector(wrapDom+DOM.bigBar).offsetWidth / document.querySelector(wrapDom+DOM.slider_chart).offsetWidth));
 
 	var chartMaxYAll = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
 	var chartMaxYPart = arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr));
@@ -669,11 +666,11 @@ function generate(nr_chart) {
 	renderPart(DOM.bigBar, 0, chartLength, chartMaxYPart, true, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates);
 	
 	////init
-	widthSlider = document.querySelector(DOM.slider_chart).offsetWidth;
-	sliderAllWidth = document.querySelector(DOM.bigBar).offsetWidth;
-	document.querySelector(DOM.bigBar).querySelector('.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
-	document.querySelector(DOM.slider_chart).style.left = "0";
-	document.querySelector(DOM.bigBar).scrollLeft = 0;
+	widthSlider = document.querySelector(wrapDom+DOM.slider_chart).offsetWidth;
+	sliderAllWidth = document.querySelector(wrapDom+DOM.bigBar).offsetWidth;
+	document.querySelector(wrapDom+DOM.bigBar).querySelector(wrapDom+'.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
+	document.querySelector(wrapDom+DOM.slider_chart).style.left = "0";
+	document.querySelector(wrapDom+DOM.bigBar).scrollLeft = 0;
 	
 	//initDates
 	var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
@@ -684,23 +681,24 @@ function generate(nr_chart) {
 	
 	var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
 	for(var i = 0; i <= rightStartCurX; i++) {
-		var selector = document.querySelector('.hor span[data-id="'+i+'"] i');
+		var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
 		if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
 			if(selector) {
-				selector.classList.add('displayHorLabelDate');
+				selector.classList.add(DOM.displayHorLabelDate);
 			}
 		}
 		else {
 			if(selector) {
-				selector.classList.remove('displayHorLabelDate');
+				selector.classList.remove(DOM.displayHorLabelDate);
 			}
 		}
 	}
 	//initDates
 	
-	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr)));
-	//initY	
+	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr)), wrapDom);
 }
 
 night();
-generate(1);
+generate(0, 'Followers');
+generate(1, 'Heading 1');
+generate(2, 'Heading 2');
