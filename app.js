@@ -562,7 +562,7 @@ function setEventListeners(ch) {
 							
 			
 			
-			function animate() {
+			
 				canAnimate = false;
 				var gg = 0;
 				var ii = setInterval(function(){
@@ -579,13 +579,13 @@ function setEventListeners(ch) {
 					if(gg === 16) {
 						clearInterval(ii);
 						canAnimate = true;
+						
+						goFlex();					
 					}
 				}, 1);
-			}
-			
-			
-				animate();
-			}
+				
+		
+			}//canAnimate
 			
 		}//goflex
 		
