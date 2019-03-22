@@ -214,14 +214,8 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 	
 	document.querySelector(wrapDom+el+ ' .sub').insertAdjacentHTML('beforeend', svgPath);
 	
-	var allSvgPaths = document.querySelectorAll(wrapDom+'.svgPath');
-	var allSvgPathsArr = [].slice.call(allSvgPaths);
-	allSvgPathsArr.forEach(function(i) {
-	console.log(i);
-		i.style.height = (100 / (82.87251029498277/100)) + '%'; //82.87251029498277 - curMax
-	});		
-
 	
+
 }
 
 function renderWrapperBar(el, x_start, x_end, numberOfChartsY, arrLabels) {
@@ -255,9 +249,9 @@ function generateCSS(sheet, arrLabels, numberOfChartsY, numberData, chart) {
 	for(var k = 0; k < numberOfChartsY; k++) {
 		var selector = arrLabels[k];
 		
-		var strDotsY = '.'+selector + ' ' + '.'+DOM.yn_dot+' {background:'+getColorByLabel(selector,numberData, chart)+' !important;}';
+		var strDotsY = wrapDom+'.'+selector + ' ' + '.'+DOM.yn_dot+' {background:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		//var strLines = '.'+selector + ' ' + 'svg line {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
-		var strLinesPoly = 'polyline.poly_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
+		var strLinesPoly = wrapDom+'polyline.poly_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		
 		sheet.insertRule(strDotsY, 0);
 		//sheet.insertRule(strLines, 0);
@@ -318,6 +312,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	var handler = moveSlider.bind(this);
 	
 	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX, optimalDatesPerWidth;
+
 
 	document.querySelector(wrapDom+DOM.slider_chart).addEventListener('mousedown', function(e) {
 		if(e.target.className !== DOM.resizerLeftClass && e.target.className !== DOM.resizerRightClass) {//чтобы не ездила когда я делаю ресайз
@@ -516,6 +511,11 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			updateInfoAboutSlider();
 			infoCurentZoom();
 			goFlex();
+			
+			//updateSmallBar
+			var curMaxSmall = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
+			var propSmall = (curMaxSmall / chartMaxYAll) * 100;
+			document.querySelector(wrapDom+DOM.smallBar+' .svgPath').style.height = (100 / (propSmall/100)) + '%';				
 		
 		});
 	});
@@ -530,17 +530,13 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		
 		//console.log(`${chartMaxYAll} max`);
 		
-		var curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
-		var prop = (curMax / chartMaxYAll) * 100;
+		var curMaxBig = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
+		var propBig = (curMaxBig / chartMaxYAll) * 100;
+		document.querySelector(wrapDom+DOM.bigBar+' .svgPath').style.height = (100 / (propBig/100)) + '%';
+		//	
 		
-		//console.log(prop);
-	var allSvgPaths = document.querySelectorAll(wrapDom+'.svgPath');
-	var allSvgPathsArr = [].slice.call(allSvgPaths);
-	allSvgPathsArr.forEach(function(i) {
-		i.style.height = (100 / (prop/100)) + '%'; //82.87251029498277 - curMax
-	});		
 
-	console.log(chartMaxYAll);
+	//console.log(chartMaxYAll);
 		
 		
 	}//goflex
@@ -697,6 +693,15 @@ function generate(nr_chart, heading, chart) {
 		}
 	}
 	//initDates
+	
+	//
+	var curMaxBig = arrmax(getMax(0,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
+	var propBig = (curMaxBig / chartMaxYAll) * 100;
+	document.querySelector(wrapDom+DOM.bigBar+' .svgPath').style.height = (100 / (propBig/100)) + '%';
+	//	
+	var curMaxSmall = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
+	var propSmall = (curMaxSmall / chartMaxYAll) * 100;
+	document.querySelector(wrapDom+DOM.smallBar+' .svgPath').style.height = (100 / (propSmall/100)) + '%';	
 	
 	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr)), wrapDom);
 	
