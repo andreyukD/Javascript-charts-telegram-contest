@@ -185,11 +185,11 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 	
 	
 		var oneDot = (100 / (x_end - 1)); // 0.8928571428571429
-		var svgPath = '<div class="wrapSvgPath"><svg class="svgPath" viewBox="0 0 100 100" preserveAspectRatio="none" style="width: calc(100%); height: calc(100.0%);position:absolute;top:0;left:0;border:1px solid red;">';	
+		var svgPath = '<div class="wrapSvgPath"><svg class="svgPath" viewBox="0 0 100 100" preserveAspectRatio="none" style="width: calc(100%); height: calc(100.0%);position:absolute;top:0;left:0;">';	
 	
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
-		document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).innerHTML = '';
+		//document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).innerHTML = '';
 		
 		var allSpanInY = '';
 		
@@ -223,11 +223,12 @@ function renderWrapperBar(el, x_start, x_end, numberOfChartsY, arrLabels) {
 	divSub.className = DOM.subInBar;	
 	document.querySelector(wrapDom+el).appendChild(divSub);
 	
-	for(var k = 0; k < numberOfChartsY; k++) {
-		var div = document.createElement('div');
-		div.className = 'y ' + arrLabels[k];
-		document.querySelector(wrapDom+el + ' .' + DOM.subInBar).appendChild(div);
-	}
+	
+	//for(var k = 0; k < numberOfChartsY; k++) {
+	//	var div = document.createElement('div');
+	//	div.className = 'y ' + arrLabels[k];
+	//	document.querySelector(wrapDom+el + ' .' + DOM.subInBar).appendChild(div);
+//}
 }
 
 
@@ -401,7 +402,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		//onlyforResize
 		
 		var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-		//console.log(everyThisXToHide);
+		console.log(everyThisXToHide);
 		for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
 			var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
 			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
@@ -509,13 +510,49 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			hideUncheked(g, wrapDom);
 			
 			updateInfoAboutSlider();
-			infoCurentZoom();
+			
+			//no-data-to-show
+			var noDataBlock = document.querySelector(wrapDom + '.wrapGrids .no-data');
+			var vertDivChange = document.querySelector(wrapDom + '.vert');
+			var subDivChange = document.querySelector(wrapDom + '.sub');
+			var sliderChange = document.querySelector(wrapDom + '.slider_chart_wrap');
+			
+			if(getActiveChecked(checkboxesArr).indexOf(true) === -1)  {
+				noDataBlock.innerHTML = 'No Data available';
+				noDataBlock.classList.remove('hideChange');
+				
+				vertDivChange.classList.add('hideChange');
+				subDivChange.classList.add('hideChange');
+				sliderChange.classList.add('hideChange');		
+
+				return;
+			}
+			else {
+				noDataBlock.innerHTML = '';
+				noDataBlock.classList.add('hideChange');//hide
+				
+				vertDivChange.classList.remove('hideChange');
+				subDivChange.classList.remove('hideChange');
+				sliderChange.classList.remove('hideChange');					
+			}
+			
 			goFlex();
+			//
 			
 			//updateSmallBar
 			var curMaxSmall = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
 			var propSmall = (curMaxSmall / chartMaxYAll) * 100;
-			document.querySelector(wrapDom+DOM.smallBar+' .svgPath').style.height = (100 / (propSmall/100)) + '%';				
+			document.querySelector(wrapDom+DOM.smallBar+' .svgPath').style.height = (100 / (propSmall/100)) + '%';		
+			
+			//
+			var leftOfSlid = parseFloat(element.style.left.replace('px',''));
+			var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
+			
+			var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
+			var rightStartCurX = leftStartCurPozX + numberCurX;
+		
+			curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
+			generateVertGrid(curMax, wrapDom);			
 		
 		});
 	});
@@ -628,7 +665,7 @@ function generate(nr_chart, heading, chart) {
 		hor: 'hor',
 	}
 	
-	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="vert"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
+	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="no-data"></div><div class="vert"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
 
 	document.querySelector('body').insertAdjacentHTML('beforeend', layout);
 	
@@ -721,6 +758,20 @@ function generate(nr_chart, heading, chart) {
 	};		
 	//
 	//document.getElementById('{element-id}').onwheel = function(){ return false; }
+	
+	//
+	var allLabelsChecks = document.querySelectorAll('.checkboxLineY');
+	var allLabelsChecksArr = [].slice.call(allLabelsChecks);
+
+	allLabelsChecksArr.forEach(function(i) {
+		i.insertAdjacentHTML('beforeend', '<b></b>');
+		i.addEventListener('mousedown', function() {
+			i.classList.remove('animate_check');
+			setTimeout(function(){i.classList.add('animate_check');}, 10);
+			setTimeout(function(){i.classList.remove('animate_check');}, 500);
+		});
+	});		
+	//
 }
 
 night();
@@ -729,18 +780,9 @@ generate(1, 'Heading 1', chart);
 generate(2, 'Heading 3', chart);
 generate(3, 'Heading 4', chart);
 generate(4, 'Heading 5', chart);
+
+//
+
 }
 
 mapTouchEvents();
-
-var allLabelsChecks = document.querySelectorAll('.checkboxLineY');
-var allLabelsChecksArr = [].slice.call(allLabelsChecks);
-
-allLabelsChecksArr.forEach(function(i) {
-	i.insertAdjacentHTML('beforeend', '<b></b>');
-	i.addEventListener('mousedown', function() {
-		i.classList.remove('animate_check');
-		setTimeout(function(){i.classList.add('animate_check');}, 10);
-		setTimeout(function(){i.classList.remove('animate_check');}, 500);
-	});
-});	
