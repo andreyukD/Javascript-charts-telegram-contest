@@ -110,6 +110,19 @@ function arrmax(arrs) {
     return max;
 }
 
+function kFormatter(num) {
+     if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+     }
+     if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+     }
+     if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+     }
+     return num;
+}
+
 function getTypeByLabel(label, numberData) {
 	return chart[numberData].types[label];
 }
@@ -170,12 +183,12 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 		var strWithDataTooltip = '';
 		var strWithDataTooltip = '<div class="'+DOM.tooltipWrapY+'">';
 		for(var k = 0; k < numberOfChartsY; k++) {
-			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+yDataArr[k][i]+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
+			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][i])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
 		}
 		strWithDataTooltip += '</div>';		
 		
 			var g = prettyDate(arrDates[i], 'MMM dd');
-			allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div><i>'+g+'</i></span>';
+			allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+g+'</i></span>';
 		}
 		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
 		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
@@ -602,7 +615,7 @@ function generateVertGrid(max, wrapDom) {
 	var str='';
 	for(var i=0;i<5;i++) {
 		var hideFirst = i === 0 ? 'style="display:none;"' : '';
-		str += '<span><i '+hideFirst+'>'+(roundMax - part*i) +'</i></span>';
+		str += '<span><i '+hideFirst+'>'+(kFormatter(roundMax - part*i)) +'</i></span>';
 	}
 	document.querySelector(wrapDom+DOM.vertGridWrap).innerHTML = '';
 	document.querySelector(wrapDom+DOM.vertGridWrap).insertAdjacentHTML('beforeend',str);
@@ -745,20 +758,20 @@ function generate(nr_chart, heading, chart) {
 	
 
 	//
-	var allHorStats = document.querySelector(wrapDom+'.hor');
-	allHorStats.onmousedown = function(e) {
-		if (e.target.tagName != 'SPAN') return;
-		var _span = e.target.getAttribute('data-id');
-		var thisShow = document.querySelector(wrapDom+'.hor span[data-id="'+_span+'"] .data');
-	
-		var sections = document.querySelectorAll(wrapDom+'.hor span .data');   
-			for (var i = 0; i < sections.length; i++) {   
-				sections[i].style.display = 'none';
-			}  	
-			thisShow.style.display = 'block';
-	};		
+	//var allHorStats = document.querySelector(wrapDom+'.hor');
+	//allHorStats.onmousedown = function(e) {
+	//	if (e.target.tagName != 'SPAN') return;
+	//	var _span = e.target.getAttribute('data-id');
+	//	var thisShow = document.querySelector(wrapDom+'.hor span[data-id="'+_span+'"] .data');
 	//
-	//document.getElementById('{element-id}').onwheel = function(){ return false; }
+	//	var sections = document.querySelectorAll(wrapDom+'.hor span .data');   
+	//		for (var i = 0; i < sections.length; i++) {   
+	//			sections[i].style.display = 'none';
+	//		}  	
+	//		thisShow.style.display = 'block';
+//};		
+	//
+	//document.querySelector(wrapDom + DOM.bigBar).addEventListener('touchmove', function() {return false;});
 	
 	//
 	
@@ -778,7 +791,7 @@ function generate(nr_chart, heading, chart) {
 
 nightfn();
 generate(0, 'Followers', chart);
-generate(1, 'Heading 1', chart);
+generate(1, 'Heading 2', chart);
 generate(2, 'Heading 3', chart);
 generate(3, 'Heading 4', chart);
 generate(4, 'Heading 5', chart);
