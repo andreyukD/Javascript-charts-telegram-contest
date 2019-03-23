@@ -29,6 +29,7 @@ body.night .smallBar {border-color:#40566b;}
 body.night .checkboxLineY {border-color:#344658;}
 body.night .vert span i, body.night .hor span i, body.night .vert::after {color:#546778;}
 body.night .vert span {border-color:#293544;}
+body.night .dataWrap::before {background:#293544;}
 body.night .sub {border-color:#293544;}
 body.night .slider_chart .resizers .resizer {background:#40566b;}
 body.night label.checkboxLineY span {color:#fff;}
@@ -36,6 +37,8 @@ body.night .slider_chart_wrap {border-color:rgba(31,42,56);background:rgba(36,47
 body.night .hor span::before {background:rgb(59,74,90);}
 body.night .data {background:rgb(37,50,65);color:#fff;}
 body.night .no-data {color:#fff;}
+
+.pseudoCircleSmall {stroke:#fff;}
 
 body {font-family:sans-serif;font-size:14px;}
 * {padding: 0;box-sizing:border-box;margin:0;line-height:1;}
@@ -61,18 +64,14 @@ body {font-family:sans-serif;font-size:14px;}
 .hor span {position:relative;width:100%;/*border:1px solid;*/}
 .hor span i {display:block;top:calc(100% + 5px);left: 0;position:absolute;white-space:nowrap;transition:opacity .5s;/*border:1px solid;*/}
 .hor span i.displayHorLabelDate {opacity:1 !important;}
-.hor span::before {content:'';background:rgb(223,230,235);width: 1px;height: calc(100% - 10px);position:absolute;display: block;bottom: 0;left: 0s;z-index:-1;display:none;}
 /*.bigBar {pointer-events:none !important;}*/
 .no-data {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;z-index:10;}
 .bigBar .y span:hover i.simpleY {width:10px;height:10px;background:blue;}
-.hor span:hover::before, .hor span:hover .data {display:block;}
+.dataWrap {position:absolute;height:calc(100% - 15px);left:0;top:-10px;min-width:150px;z-index:10;transform:translateX(-50%);z-index:10;display:none;}
+.svgPath line {display:none;}
+.dataWrap::before {position:absolute;display:block;width:2px;height:100%;top:0;left:50%;background:#F2F4F5;content:'';transform:translateX(-50%);}
 .data {
-	position:absolute;
-	min-width: 150px;
-	transform:translateX(-50%);
-	top:-10px;
-	left:0;
-	display:none;
+	position:relative;
 	background:#fff;
 	padding:15px 15px 5px 15px;
 	border-radius:5px;box-shadow:0 0 3px rgba(0,0,0,0.3);

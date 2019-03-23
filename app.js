@@ -186,7 +186,7 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 		//}
 		//strWithDataTooltip += '</div>';		
 		//
-		//	allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+prettyDate(arrDates[i], 'MMM dd')+'</i></span>';
+		//	allSpanX += '<span data-id='+i+'><div class="'+DOM.dataWrap+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+prettyDate(arrDates[i], 'MMM dd')+'</i></span>';
 		//}
 		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
 		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
@@ -202,28 +202,26 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 	
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
-		//document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).innerHTML = '';
-		
-		var allSpanInY = '';
+
 		
 		svgPath += '<polyline class="poly_y poly_'+arrLabels[k]+'" vector-effect="non-scaling-stroke" stroke-width="2" fill="none" points="';
 		
 		//CHECK
 		for(var i = x_start; i < x_end; i++) {
-			
-			svgPath+=' '+(oneDot*i)+','+getCurrentYProportion(yDataArr[k][i], max);
-			
-			//allSpanInY += '<span data-id="'+i+'"><svg><g><line stroke-linecap="round"  x1="0" y1="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" x2="100%" y2="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%"><animate attributeName="y1" from="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" to="'+(100-getCurrentYProportion(yDataArr[k][i], max))+'%" dur="1s" fill="freeze" begin="indefinite"/> <animate attributeName="y2" from="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" to="'+(100 - getCurrentYProportion(yDataArr[k][i+1], max))+'%" dur="1s" fill="freeze" begin="indefinite" /></line></g></svg></span>';			
-			  
+			svgPath+=' '+(oneDot*i)+','+getCurrentYProportion(yDataArr[k][i], max); 
 		}
 		
 		svgPath += '"></polyline>';
 		
-		//document.querySelector(wrapDom+el+ ' .'+arrLabels[k]).insertAdjacentHTML('beforeend', allSpanInY);
-		
+		if(renderAdditems) {
+			svgPath += '<line class="pseudoCircleBig pseudoCircle_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:10px;vector-effect:non-scaling-stroke" />';
+			svgPath += '<line class="pseudoCircleSmall pseudoCircleSmall_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:7px;vector-effect:non-scaling-stroke" />';
+		}
 	}
 	
+	
 	svgPath += '</svg></div>';
+	
 	
 	document.querySelector(wrapDom+el+ ' .sub').insertAdjacentHTML('beforeend', svgPath);
 	
@@ -266,10 +264,12 @@ function generateCSS(sheet, arrLabels, numberOfChartsY, numberData, chart) {
 		var strDotsY = wrapDom+'.'+selector + ' ' + '.'+DOM.yn_dot+' {background:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		//var strLines = '.'+selector + ' ' + 'svg line {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		var strLinesPoly = wrapDom+'polyline.poly_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
+		var pseudoCircleCss = wrapDom+'.pseudoCircle_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		
 		sheet.insertRule(strDotsY, 0);
 		//sheet.insertRule(strLines, 0);
 		sheet.insertRule(strLinesPoly, 0);
+		sheet.insertRule(pseudoCircleCss, 0);
 	}
 }
 
@@ -306,6 +306,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	document.querySelector(wrapDom+'.myhover').addEventListener('mousemove', showTooltipFn);	//myhover
 	
 	function showTooltipFn(event) {
+			if(getActiveChecked(checkboxesArr).indexOf(true) !== -1)  {
 			var countAllX = arrDates.length;
 			var sliderAllWidth = document.querySelector(wrapDom + DOM.bigBar).offsetWidth;
 			var widthSlider = document.querySelector(wrapDom + DOM.slider_chart).offsetWidth;
@@ -337,16 +338,48 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		//console.log(curDot);
 		//
 		
-	strWithDataTooltip = '';
+		//console.log(curDot);
+		
+		//console.log(percentOnCurDisplay);
+		//console.log(curDot);
+		
+		//console.log(x_end);
+		
+		
+	var wrapDomDataObj = document.querySelector(wrapDom+'.'+DOM.dataWrap);
+	var strWithDataTooltip = '';
+	//var toolTipDots = '';
+	curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
+	
 	for(var k = 0; k < numberOfChartsY; k++) {
-		strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][curDot])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
+		var colorCur = getColorByLabel(arrLabels[k], numberData, chart);
+		strWithDataTooltip += '<div><div style="color:'+colorCur+'"><strong>'+kFormatter(yDataArr[k][curDot])+'</strong></div><div style="color:'+colorCur+'">'+arrLabels[k]+'</div></div>';
+		
+		var curCircleX = (100 / (countAllX - 1));
+		
+		var bigCircle = document.querySelector(wrapDom+'.pseudoCircle_'+arrLabels[k]);
+		var smallCircle = document.querySelector(wrapDom+'.pseudoCircleSmall_'+arrLabels[k]);
+		
+		
+		if(arrDates[curDot]) {
+			bigCircle.setAttribute('x1', curDot*curCircleX);
+			bigCircle.setAttribute('x2', curDot*curCircleX);
+			bigCircle.setAttribute('y1', getCurrentYProportion(yDataArr[k][curDot], chartMaxYAll));
+			bigCircle.setAttribute('y2', getCurrentYProportion(yDataArr[k][curDot], chartMaxYAll));
+			
+			smallCircle.setAttribute('x1', curDot*curCircleX);
+			smallCircle.setAttribute('x2', curDot*curCircleX);
+			smallCircle.setAttribute('y1', getCurrentYProportion(yDataArr[k][curDot], chartMaxYAll));
+			smallCircle.setAttribute('y2', getCurrentYProportion(yDataArr[k][curDot], chartMaxYAll));
+		}		
 	}
 	
 	if(arrDates[curDot]) {//check on edges
+	
 		document.querySelector(wrapDom+'.'+DOM.d).innerHTML = prettyDate(arrDates[curDot], 'DDD, MMM dd');
 		document.querySelector(wrapDom+'.'+DOM.tooltipWrapY).innerHTML = strWithDataTooltip;	
 		
-		var wrapDomDataObj = document.querySelector(wrapDom+'.'+DOM.data);
+		
 		if(percentOnCurDisplay >= 8 && percentOnCurDisplay <= 92) {
 			wrapDomDataObj.style.left = percentOnCurDisplay + '%';
 			wrapDomDataObj.style.transform = 'translateX(-50%)';
@@ -364,12 +397,25 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		}
 		
 		wrapDomDataObj.style.display = 'block';	
-		}
+		
+		var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
+		var arrCirclesArr = [].slice.call(arrCircles);
+		arrCirclesArr.forEach(function(i) {i.style.display = 'block';});	
+		
+	}
+		//
+		
+		
+			}//if we have data
 	}//showTooltipFn
 	
 	
 	document.querySelector(wrapDom+'.myhover').addEventListener('mouseleave', function() {
-		document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
+		document.querySelector(wrapDom+'.'+DOM.dataWrap).style.display = 'none';
+		
+		var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
+		var arrCirclesArr = [].slice.call(arrCircles);
+		arrCirclesArr.forEach(function(i) {i.style.display = 'none';});			
 	});
 	
 	
@@ -408,7 +454,11 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		
 		/////////for ALL
 		optimalDatesPerWidth = Math.floor(elBigBar.offsetWidth / 70);
-		document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
+		document.querySelector(wrapDom+'.'+DOM.dataWrap).style.display = 'none';
+		
+		var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
+		var arrCirclesArr = [].slice.call(arrCircles);
+		arrCirclesArr.forEach(function(i) {i.style.display = 'none';});			
 	});	
 	
 	
@@ -605,7 +655,10 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			hideUncheked(g, wrapDom);
 			
 			updateInfoAboutSlider();
-			document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
+			document.querySelector(wrapDom+'.'+DOM.dataWrap).style.display = 'none';
+			var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
+			var arrCirclesArr = [].slice.call(arrCircles);
+			arrCirclesArr.forEach(function(i) {i.style.display = 'none';});				
 			
 			//which tooltip are shown
 			
@@ -758,6 +811,7 @@ function generate(nr_chart, heading, chart) {
 		subInBar: 'sub',
 		tooltipWrapY: 'tooltipWrapY',
 		data: 'data',
+		dataWrap: 'dataWrap',
 		d: 'd',
 		resizerLeft: '.resizer.bottom-left',
 		resizerRight: '.resizer.bottom-right',
@@ -767,7 +821,7 @@ function generate(nr_chart, heading, chart) {
 		hor: 'hor',
 	}
 	
-	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">HERE DATE</div><div class="'+DOM.tooltipWrapY+'">HERE INFO</div></div></div><!--tooltip--><div class="no-data"></div><div class="vert"></div><div class="hor"></div><div class="myhover"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
+	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="dataWrap"><div class="'+DOM.data+'"><div class="'+DOM.d+'">HERE DATE</div><div class="'+DOM.tooltipWrapY+'">HERE INFO</div></div></div><!--tooltip--><div class="no-data"></div><div class="vert"></div><div class="hor"></div><div class="myhover"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
 
 	document.querySelector('body').insertAdjacentHTML('beforeend', layout);
 	
