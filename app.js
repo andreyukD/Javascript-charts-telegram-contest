@@ -167,32 +167,32 @@ function getCurrentYProportion(currentY, max) {
 	return currentY * 100 / max;
 }
 
-function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates) {
+function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates, countAllX) {
 	
 	if(renderAdditems) {
 	
-		var divHorWrap = document.createElement('div');
-		divHorWrap.className = DOM.hor;	
-		document.querySelector(wrapDom+el + ' .'+DOM.subInBar).appendChild(divHorWrap);
+		//var divHorWrap = document.createElement('div');
+		//divHorWrap.className = DOM.hor;	
+		//document.querySelector(wrapDom+el + ' .'+DOM.subInBar).appendChild(divHorWrap);
 	
 
 		//render X dates
-		var allSpanX = '';
-		for(var i = x_start; i < x_end - 1; i++) {
-		
-		var strWithDataTooltip = '';
-		var strWithDataTooltip = '<div class="'+DOM.tooltipWrapY+'">';
-		for(var k = 0; k < numberOfChartsY; k++) {
-			strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][i])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
-		}
-		strWithDataTooltip += '</div>';		
-		
-			var g = prettyDate(arrDates[i], 'MMM dd');
-			allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+g+'</i></span>';
-		}
-		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
-		document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
+		//var allSpanX = '';
+		//for(var i = x_start; i < x_end - 1; i++) {
+		//
+		//var strWithDataTooltip = '<div class="'+DOM.tooltipWrapY+'">';
+		//for(var k = 0; k < numberOfChartsY; k++) {
+		//	strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][i])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
+		//}
+		//strWithDataTooltip += '</div>';		
+		//
+		//	allSpanX += '<span data-id='+i+'><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+prettyDate(arrDates[i], 'MMM dd')+'</i></span>';
+		//}
+		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
+		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
 		//render X dates
+		
+		
 
 	}
 	
@@ -411,24 +411,37 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		
 		var rightStartCurX = leftStartCurPozX + numberCurX;
 		
+	//render X dates (need after processing cur positions)
+	var allSpanX = '';
+	var partXDates = Math.floor((numberCurX-1) / 5);
+	
+	for(var i = 0; i < 5; i++) {	
+		allSpanX += '<span data-id='+i+'><i>'+prettyDate(arrDates[leftStartCurPozX + partXDates*i], 'MMM dd')+'</i></span>';
+	}
+	allSpanX += '<span data-id="last"><i>'+prettyDate(arrDates[rightStartCurX-1], 'MMM dd')+'</i></span>';
+	
+	document.querySelector(wrapDom+DOM.horGridWrap).innerHTML = '';
+	document.querySelector(wrapDom+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);
+	//render X dates		
+		
 		
 		//onlyforResize
 		
-		var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-		//console.log(everyThisXToHide);
-		for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
-			var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
-			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
-				if(selector) {
-					selector.classList.add(DOM.displayHorLabelDate);
-				}
-			}
-			else {
-				if(selector) {
-					selector.classList.remove(DOM.displayHorLabelDate);
-				}
-			}
-		}
+		//var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
+		////console.log(everyThisXToHide);
+		//for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
+		//	var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
+		//	if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
+		//		if(selector) {
+		//			selector.classList.add(DOM.displayHorLabelDate);
+		//		}
+		//	}
+		//	else {
+		//		if(selector) {
+		//			selector.classList.remove(DOM.displayHorLabelDate);
+		//		}
+		//	}
+		//}
 		
 		
 		curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
@@ -679,7 +692,7 @@ function generate(nr_chart, heading, chart) {
 		hor: 'hor',
 	}
 	
-	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="no-data"></div><div class="vert"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
+	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="no-data"></div><div class="vert"></div><div class="hor"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
 
 	document.querySelector('body').insertAdjacentHTML('beforeend', layout);
 	
@@ -712,8 +725,8 @@ function generate(nr_chart, heading, chart) {
 
 	renderWrapperBar(DOM.bigBar, 0, chartLength, numberOfChartsY, arrLabels);
 	renderWrapperBar(DOM.smallBar, 0, chartLength, numberOfChartsY, arrLabels);
-	renderPart(DOM.smallBar, 0, chartLength, chartMaxYAll, false, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates);
-	renderPart(DOM.bigBar, 0, chartLength, chartMaxYAll, true, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates);
+	renderPart(DOM.smallBar, 0, chartLength, chartMaxYAll, false, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates, countAllX);
+	renderPart(DOM.bigBar, 0, chartLength, chartMaxYAll, true, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates, countAllX);
 	
 	////init
 	widthSlider = document.querySelector(wrapDom+DOM.slider_chart).offsetWidth;
@@ -722,27 +735,46 @@ function generate(nr_chart, heading, chart) {
 	document.querySelector(wrapDom+DOM.slider_chart).style.left = "0";
 	document.querySelector(wrapDom+DOM.bigBar).scrollLeft = 0;
 	
-	//initDates
-	var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
+	
+	var leftOfSlid = parseFloat(document.querySelector(wrapDom+DOM.slider_chart).style.left.replace('px',''));//0
+	var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 - 0
 	
 	var countAllX = arrDates.length;
 	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
-	var rightStartCurX = 0 + numberCurX;
+	console.log(numberCurX);
+	var rightStartCurX = leftStartCurPozX + numberCurX;
 	
-	var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-	for(var i = 0; i <= rightStartCurX; i++) {
-		var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
-		if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
-			if(selector) {
-				selector.classList.add(DOM.displayHorLabelDate);
-			}
-		}
-		else {
-			if(selector) {
-				selector.classList.remove(DOM.displayHorLabelDate);
-			}
-		}
+
+	//render X dates (need after processing cur positions)
+	var allSpanX = '';
+	var partXDates = Math.floor((numberCurX-1) / 5);
+	
+	for(var i = 0; i < 5; i++) {	
+		allSpanX += '<span data-id='+i+'><i>'+prettyDate(arrDates[leftStartCurPozX + partXDates*i], 'MMM dd')+'</i></span>';
 	}
+	allSpanX += '<span data-id="last"><i>'+prettyDate(arrDates[rightStartCurX-1], 'MMM dd')+'</i></span>';
+	
+	document.querySelector(wrapDom+DOM.horGridWrap).innerHTML = '';
+	document.querySelector(wrapDom+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);
+	//render X dates	
+	
+	//initDates
+	//var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
+	
+	//var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
+	//for(var i = 0; i <= rightStartCurX; i++) {
+	//	var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
+	//	if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
+	//		if(selector) {
+	//			selector.classList.add(DOM.displayHorLabelDate);
+	//		}
+	//	}
+	//	else {
+	//		if(selector) {
+	//			selector.classList.remove(DOM.displayHorLabelDate);
+	//		}
+	//	}
+	//}
 	//initDates
 	
 	//
