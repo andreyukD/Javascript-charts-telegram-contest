@@ -1,15 +1,16 @@
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(221,231,237,.4)}50%{box-shadow:0 0 0 35px rgba(221,231,237,.4)}100%{box-shadow:0 0 0 0 rgba(221,231,237,.4)}}
-@keyframes pulsenight{0%{box-shadow:0 0 0 0 rgba(59,74,90,.4)}50%{box-shadow:0 0 0 35px rgba(59,74,90,.4)}100%{box-shadow:0 0 0 0 rgba(59,74,90,.4)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(221,231,237,.4)}50%{box-shadow:0 0 0 15px rgba(221,231,237,.4)}100%{box-shadow:0 0 0 0 rgba(221,231,237,.4)}}
+@keyframes pulsenight{0%{box-shadow:0 0 0 0 rgba(59,74,90,.4)}50%{box-shadow:0 0 0 15px rgba(59,74,90,.4)}100%{box-shadow:0 0 0 0 rgba(59,74,90,.4)}}
 @keyframes rightmove{0%{width:0%;opacity:0;}25%{opacity:0;}50%{width:100%;opacity:1;}100%{width:0%;opacity:0;}}
 @keyframes vertmove{0%{transform:translateY(0)}50%{}100%{transform:translateY(-100%);opacity:0;}}
-
+body, html {overflow-x:hidden;}
 .hideChange {opacity:0;}
 .anim_vert {/*animation:vertmove .5s alternate ease-in-out;*/}
-
+.switch {-webkit-tap-highlight-color: rgba(0,0,0,0);
+-webkit-tap-highlight-color: transparent; }
 .animate_check {animation:pulse .5s alternate;}
 .animate_check b {animation: rightmove .5s alternate;}
 body.night .animate_check {animation-name:pulsenight;}
-label.checkboxLineY {position:relative;}
+label.checkboxLineY {position:relative;cursor:pointer;}
 label.checkboxLineY b {position:absolute;top: 0;left: 0;width:0%;height:100%;display:block;border-radius: 25px;background:rgba(221,231,237,.2);}
 .switch {
 	text-align:center;

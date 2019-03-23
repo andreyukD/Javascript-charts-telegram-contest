@@ -11,9 +11,9 @@ function touchHandler(event)
         default:           return;
     }
 
-    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
-    //                screenX, screenY, clientX, clientY, ctrlKey, 
-    //                altKey, shiftKey, metaKey, button, relatedTarget);
+     //initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+     //               screenX, screenY, clientX, clientY, ctrlKey, 
+     //               altKey, shiftKey, metaKey, button, relatedTarget);
 
     var simulatedEvent = document.createEvent("MouseEvent");
     simulatedEvent.initMouseEvent(type, true, true, window, 1, 
@@ -22,7 +22,7 @@ function touchHandler(event)
                                   false, false, false, 0/*left*/, null);
 
     first.target.dispatchEvent(simulatedEvent);
-    event.preventDefault();
+    //event.preventDefault();
 }
 
 function mapTouchEvents() 
@@ -33,12 +33,11 @@ function mapTouchEvents()
     document.addEventListener("touchcancel", touchHandler, true);    
 }
 
-function night() {
+function nightfn() {
 	var strNight='<div class="switch">Switch to Night mode</div>';
 	document.querySelector('body').insertAdjacentHTML('beforeend', strNight);
 	var night = false;
-	document.querySelector('.switch').addEventListener('mousedown', function(e) {
-		 e.preventDefault();
+	document.querySelector('.switch').addEventListener('click', function(e) {
 		document.querySelector('body').classList.toggle('night');
 		if(!night) {this.innerHTML = 'Switch to Day mode'; night = true;}
 		else {this.innerHTML = 'Switch to Night mode'; night = false;}
@@ -142,10 +141,11 @@ function generateAllDotsY(numberData, numberOfChartsY, chart) {
 	return yDataArr;
 }
 
-function createCheckboxes(numberOfChartsY, numberData, chart, arrLabels) {
+function createCheckboxes(numberOfChartsY, numberData, chart, arrLabels, wrDomClass) {
+	
 	for(var i = 0; i<numberOfChartsY; i++) {
 		var color = getColorByLabel(arrLabels[i], numberData, chart);
-		var string='<label class="'+DOM.checkboxLineY+'"><input data-number-checkbox="'+i+'" type="checkbox" checked><span><i style="background:'+color+';border-color:'+color+';"><svg viewBox="0 0 100 100"><path id="ar'+i+'" d="M 25,55 L 45,70 L 75,35 "/></svg></i>'+getNameByLabel(arrLabels[i], numberData, chart)+'</span></label>';
+		var string='<label for="check_'+i+wrDomClass+'" class="'+DOM.checkboxLineY+'"><input id="check_'+i+wrDomClass+'" data-number-checkbox="'+i+'" type="checkbox" checked><span><i style="background:'+color+';border-color:'+color+';"><svg viewBox="0 0 100 100"><path id="ar'+i+'" d="M 25,55 L 45,70 L 75,35 "/></svg></i>'+getNameByLabel(arrLabels[i], numberData, chart)+'</span></label>';
 		document.querySelector(wrapDom+DOM.checkboxWrap).insertAdjacentHTML('beforeend', string);
 	}
 }
@@ -402,7 +402,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		//onlyforResize
 		
 		var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-		console.log(everyThisXToHide);
+		//console.log(everyThisXToHide);
 		for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
 			var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
 			if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
@@ -504,7 +504,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	
 	
 	ch.forEach(function(g) {
-		g.addEventListener('change', function(e) {			
+		g.onchange = function(e){		
 		//
 			g.nextSibling.classList.toggle('noneChecked');
 			hideUncheked(g, wrapDom);
@@ -524,7 +524,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 				vertDivChange.classList.add('hideChange');
 				subDivChange.classList.add('hideChange');
 				sliderChange.classList.add('hideChange');		
-
+    
 				return;
 			}
 			else {
@@ -554,7 +554,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
 			generateVertGrid(curMax, wrapDom);			
 		
-		});
+		}
 	});
 	
 	//
@@ -642,6 +642,7 @@ function generate(nr_chart, heading, chart) {
 	
 	//if(nr_chart === 0) {console.log(true);}
 	
+	wrDomClass = 'w'+nr_chart;
 	wrapDom = '.w'+nr_chart+' ';
 
 	DOM = {
@@ -683,7 +684,7 @@ function generate(nr_chart, heading, chart) {
 	
 	generateCSS(sheet, arrLabels, numberOfChartsY, numberData, chart);
 	//
-	createCheckboxes(numberOfChartsY, numberData, chart, arrLabels);
+	createCheckboxes(numberOfChartsY, numberData, chart, arrLabels, wrDomClass);
 	var checkboxes = document.querySelectorAll(wrapDom+'.'+DOM.checkboxLineY+ ' input');
 	var checkboxesArr = [].slice.call(checkboxes);
 	
@@ -760,21 +761,22 @@ function generate(nr_chart, heading, chart) {
 	//document.getElementById('{element-id}').onwheel = function(){ return false; }
 	
 	//
-	var allLabelsChecks = document.querySelectorAll('.checkboxLineY');
+	
+	var allLabelsChecks = document.querySelectorAll(wrapDom+'.checkboxLineY');
 	var allLabelsChecksArr = [].slice.call(allLabelsChecks);
 
 	allLabelsChecksArr.forEach(function(i) {
 		i.insertAdjacentHTML('beforeend', '<b></b>');
-		i.addEventListener('mousedown', function() {
+		i.addEventListener('touchstart', function() {		
 			i.classList.remove('animate_check');
 			setTimeout(function(){i.classList.add('animate_check');}, 10);
 			setTimeout(function(){i.classList.remove('animate_check');}, 500);
 		});
-	});		
-	//
+	});
+	
 }
 
-night();
+nightfn();
 generate(0, 'Followers', chart);
 generate(1, 'Heading 1', chart);
 generate(2, 'Heading 3', chart);
