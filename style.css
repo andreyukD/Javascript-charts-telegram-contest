@@ -34,7 +34,7 @@ body.night .slider_chart .resizers .resizer {background:#40566b;}
 body.night label.checkboxLineY span {color:#fff;}
 body.night .slider_chart_wrap {border-color:rgba(31,42,56);background:rgba(36,47,62);}
 body.night .hor span::before {background:rgb(59,74,90);}
-body.night .hor span .data {background:rgb(37,50,65);color:#fff;}
+body.night .data {background:rgb(37,50,65);color:#fff;}
 body.night .no-data {color:#fff;}
 
 body {font-family:sans-serif;font-size:14px;}
@@ -57,6 +57,7 @@ body {font-family:sans-serif;font-size:14px;}
 .vert span {width:100%;height:100%;position:relative;border-bottom:2px solid #F2F4F5;}
 .vert span i {position:absolute;left:0;bottom:calc(100% + 5px);}
 .hor {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;z-index:10;}
+.myhover {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;z-index:11;}
 .hor span {position:relative;width:100%;/*border:1px solid;*/}
 .hor span i {display:block;top:calc(100% + 5px);left: 0;position:absolute;white-space:nowrap;transition:opacity .5s;/*border:1px solid;*/}
 .hor span i.displayHorLabelDate {opacity:1 !important;}
@@ -65,19 +66,26 @@ body {font-family:sans-serif;font-size:14px;}
 .no-data {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;z-index:10;}
 .bigBar .y span:hover i.simpleY {width:10px;height:10px;background:blue;}
 .hor span:hover::before, .hor span:hover .data {display:block;}
-.hor span .data {
+.data {
 	position:absolute;
 	min-width: 150px;
-	top:3px;
-	left:0;
 	transform:translateX(-50%);
+	top:-10px;
+	left:0;
 	display:none;
 	background:#fff;
 	padding:15px 15px 5px 15px;
 	border-radius:5px;box-shadow:0 0 3px rgba(0,0,0,0.3);
 	z-index:10;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	outline: 0;	
 }
-.hor span .data .d {font-size:16px;}
+.data .d {font-size:16px;}
 .tooltipWrapY {display:flex;margin-top: 10px;font-size:13px;flex-wrap:wrap;}
 .tooltipWrapY strong {font-weight: 700;font-size:17px;}
 .tooltipWrapY > div {margin-right: 10px;margin-bottom:10px;}
@@ -90,7 +98,7 @@ body {font-family:sans-serif;font-size:14px;}
 .slider_chart {height: 100%;width:25%;position:absolute;left:0;resize:both;border:1px solid #DDE7ED;}
 .bigBar {overflow-x:scroll;overflow-y:hidden;padding-bottom: 30px;margin-bottom: -30px;touch-action: pan-y;}
 .bigBar {height: 250px;} /*250 - 30 запас на скролл, остается 220, - 25 на даты, остается 195*/
-.bigBar .sub, .vert, .hor {height: 195px;}
+.bigBar .sub, .vert, .hor, .myhover {height: 195px;}
 .sub {border-bottom:1px solid #F2F4F5;}
 .vert::after {content:'0';position:absolute;bottom: 5px;left: 0;color:#96A2AA;}
 .slider_chart .resizers{width: 100%;height: 100%;}

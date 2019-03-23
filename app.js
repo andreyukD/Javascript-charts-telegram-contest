@@ -301,9 +301,76 @@ function hideUncheked(i, wrapDom) {
 }
 
 
-function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom, chartMaxYAll) {
+function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom, chartMaxYAll,numberData,chart, arrLabels) {
 	
+	document.querySelector(wrapDom+'.myhover').addEventListener('mousemove', showTooltipFn);	//myhover
+	
+	function showTooltipFn(event) {
+			var countAllX = arrDates.length;
+			var sliderAllWidth = document.querySelector(wrapDom + DOM.bigBar).offsetWidth;
+			var widthSlider = document.querySelector(wrapDom + DOM.slider_chart).offsetWidth;
+			var leftOfSlid = parseFloat(document.querySelector(wrapDom+DOM.slider_chart).style.left.replace('px',''));
+			
+			//console.log(leftOfSlid);
+			var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 - 0
+	
+			
+			var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
+			//console.log(numberCurX);
+			var rightStartCurX = leftStartCurPozX + numberCurX;
+			
 
+			//console.log(event);
+			//console.log(`
+			//	${leftOfSlid} leftOfSlid
+			//	${leftStartCurPozX} leftStartCurPozX
+			//	${countAllX} countAllX
+			//	${numberCurX} numberCurX
+			//	${rightStartCurX}  rightStartCurX
+			//`);
+			
+		var wrapObj = document.querySelector(wrapDom + '.slider_chart_wrap');	
+		var percentOnCurDisplay = (event.clientX-wrapObj.offsetLeft) / wrapObj.offsetWidth * 100;
+		//console.log(percentOnCurDisplay);
+		
+		var curDot = Math.round(leftStartCurPozX + (percentOnCurDisplay * numberCurX / 100));
+		//console.log(curDot);
+		//
+		
+	strWithDataTooltip = '';
+	for(var k = 0; k < numberOfChartsY; k++) {
+		strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][curDot])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
+	}
+	
+	if(arrDates[curDot]) {//check on edges
+		document.querySelector(wrapDom+'.'+DOM.d).innerHTML = prettyDate(arrDates[curDot], 'DDD, MMM dd');
+		document.querySelector(wrapDom+'.'+DOM.tooltipWrapY).innerHTML = strWithDataTooltip;	
+		
+		var wrapDomDataObj = document.querySelector(wrapDom+'.'+DOM.data);
+		if(percentOnCurDisplay >= 8 && percentOnCurDisplay <= 92) {
+			wrapDomDataObj.style.left = percentOnCurDisplay + '%';
+			wrapDomDataObj.style.transform = 'translateX(-50%)';
+			wrapDomDataObj.style.right = 'auto';
+		}
+		else if(percentOnCurDisplay < 8 ) {
+			wrapDomDataObj.style.left = 0 + '%';
+			wrapDomDataObj.style.right = 'auto';
+			wrapDomDataObj.style.transform = 'translateX(0%)';
+		}
+		else {
+			wrapDomDataObj.style.right = 0 + '%';
+			wrapDomDataObj.style.left = 'auto';
+			wrapDomDataObj.style.transform = 'translateX(0%)';
+		}
+		
+		wrapDomDataObj.style.display = 'block';	
+		}
+	}//showTooltipFn
+	
+	
+	document.querySelector(wrapDom+'.myhover').addEventListener('mouseleave', function() {
+		document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
+	});
 	
 	
 	var canAnimate = true;
@@ -341,6 +408,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		
 		/////////for ALL
 		optimalDatesPerWidth = Math.floor(elBigBar.offsetWidth / 70);
+		document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
 	});	
 	
 	
@@ -492,6 +560,8 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
     }
 	
 	function resizeRight(e) {
+	
+	updateInfoAboutSlider();
 
 		//console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
 		if(e.pageX - elSlidMove.parentNode.offsetLeft + (resizerRight.offsetWidth - shiftR) <= sliderAllWidth) {
@@ -500,7 +570,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			
 			if (width > minimum_size) {
 					
-				updateInfoAboutSlider();
+				
 				goFlex();
 				changeSubWidth();	
 				infoCurentZoom();
@@ -535,6 +605,9 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			hideUncheked(g, wrapDom);
 			
 			updateInfoAboutSlider();
+			document.querySelector(wrapDom+'.'+DOM.data).style.display = 'none';
+			
+			//which tooltip are shown
 			
 			//no-data-to-show
 			var noDataBlock = document.querySelector(wrapDom + '.wrapGrids .no-data');
@@ -694,7 +767,7 @@ function generate(nr_chart, heading, chart) {
 		hor: 'hor',
 	}
 	
-	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="no-data"></div><div class="vert"></div><div class="hor"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
+	var layout = '<div class="wrapper w'+nr_chart+'"><div class="followers">'+heading+'</div><div class="wrapGrids"><div class="'+DOM.data+'"><div class="relative"><div class="'+DOM.d+'">HERE DATE</div><div class="'+DOM.tooltipWrapY+'">HERE INFO</div></div></div><!--tooltip--><div class="no-data"></div><div class="vert"></div><div class="hor"></div><div class="myhover"></div><div class="wrapBigBar"><div class="bigBar"></div></div></div><div class="wrapSmallNDrag"><div class="wrapSmallBarAbs"><div class="smallBar"></div></div></div><div class="slider_chart_wrap"><div class="slider_chart"><div class="resizers"><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div></div></div></div><div class="checkBoxWrap"></div></div>';
 
 	document.querySelector('body').insertAdjacentHTML('beforeend', layout);
 	
@@ -720,7 +793,7 @@ function generate(nr_chart, heading, chart) {
 	
 	var chartMaxYAll = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
 	var chartMaxYPart = arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr));	
-	setEventListeners(checkboxesArr, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom, chartMaxYAll);
+	setEventListeners(checkboxesArr, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom, chartMaxYAll,numberData,chart, arrLabels);
 	//
 	var numberCurX = Math.round(arrDates.length / (document.querySelector(wrapDom+DOM.bigBar).offsetWidth / document.querySelector(wrapDom+DOM.slider_chart).offsetWidth));
 
@@ -804,6 +877,8 @@ function generate(nr_chart, heading, chart) {
 			setTimeout(function(){i.classList.remove('animate_check');}, 500);
 		});
 	});
+	
+	//
 	
 }
 
