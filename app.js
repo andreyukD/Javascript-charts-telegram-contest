@@ -459,18 +459,19 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	}
 
 	function resizeLeft(e) {
-	goFlex();
-	updateInfoAboutSlider();
-	changeSubWidth();
 	
-	infoCurentZoom();
-	
+
 	if(e.pageX - shiftL - elSlidMove.parentNode.offsetLeft >= 0) {//after need to 
 
         var width = original_width - (e.pageX - original_mouse_x);
 		
 		
         if (width > minimum_size) {
+		updateInfoAboutSlider();
+		goFlex();
+		changeSubWidth();
+		infoCurentZoom();
+	
           element.style.width = width + 'px';
 		  
 		  var leftSlidCur = helperForLeftBouningOldLeft + (e.pageX - original_mouse_x)
@@ -491,21 +492,19 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
     }
 	
 	function resizeRight(e) {
-	goFlex();
-	updateInfoAboutSlider();
-	changeSubWidth();	
-	
-		infoCurentZoom();
 
 		//console.log(e.pageX - elSlidMove.parentNode.offsetLeft);
 		if(e.pageX - elSlidMove.parentNode.offsetLeft + (resizerRight.offsetWidth - shiftR) <= sliderAllWidth) {
-	
-			//var tempBound = e.pageX;
-			//if(e.pageX < 0) {tempBound = 0;}
 			
 			var width = original_width + (e.pageX - original_mouse_x);
 			
 			if (width > minimum_size) {
+					
+				updateInfoAboutSlider();
+				goFlex();
+				changeSubWidth();	
+				infoCurentZoom();
+			
 			  element.style.width = width + 'px';
 			  
 			  elBigBar.scrollLeft = elSlidMove.offsetLeft * (elBigBar.scrollWidth / elBigBar.offsetWidth) + (elBigBar.scrollWidth / elBigBar.offsetWidth);
@@ -540,6 +539,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			//no-data-to-show
 			var noDataBlock = document.querySelector(wrapDom + '.wrapGrids .no-data');
 			var vertDivChange = document.querySelector(wrapDom + '.vert');
+			var horDivChange = document.querySelector(wrapDom + '.hor');
 			var subDivChange = document.querySelector(wrapDom + '.sub');
 			var sliderChange = document.querySelector(wrapDom + '.slider_chart_wrap');
 			
@@ -548,6 +548,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 				noDataBlock.classList.remove('hideChange');
 				
 				vertDivChange.classList.add('hideChange');
+				horDivChange.classList.add('hideChange');
 				subDivChange.classList.add('hideChange');
 				sliderChange.classList.add('hideChange');		
     
@@ -558,6 +559,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 				noDataBlock.classList.add('hideChange');//hide
 				
 				vertDivChange.classList.remove('hideChange');
+				horDivChange.classList.remove('hideChange');
 				subDivChange.classList.remove('hideChange');
 				sliderChange.classList.remove('hideChange');					
 			}
@@ -741,7 +743,7 @@ function generate(nr_chart, heading, chart) {
 	
 	var countAllX = arrDates.length;
 	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
-	console.log(numberCurX);
+	//console.log(numberCurX);
 	var rightStartCurX = leftStartCurPozX + numberCurX;
 	
 
