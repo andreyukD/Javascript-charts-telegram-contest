@@ -756,22 +756,6 @@ function generate(nr_chart, heading, chart) {
 	
 	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr)), wrapDom);
 	
-
-	//
-	//var allHorStats = document.querySelector(wrapDom+'.hor');
-	//allHorStats.onmousedown = function(e) {
-	//	if (e.target.tagName != 'SPAN') return;
-	//	var _span = e.target.getAttribute('data-id');
-	//	var thisShow = document.querySelector(wrapDom+'.hor span[data-id="'+_span+'"] .data');
-	//
-	//	var sections = document.querySelectorAll(wrapDom+'.hor span .data');   
-	//		for (var i = 0; i < sections.length; i++) {   
-	//			sections[i].style.display = 'none';
-	//		}  	
-	//		thisShow.style.display = 'block';
-//};		
-	//
-	//document.querySelector(wrapDom + DOM.bigBar).addEventListener('touchmove', function() {return false;});
 	
 	//
 	

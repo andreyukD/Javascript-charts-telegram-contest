@@ -88,7 +88,7 @@ body {font-family:sans-serif;font-size:14px;}
 .vert span i, .hor span i {font-style:normal;color:#96A2AA;}
 .slider_chart_wrap {position:relative;}
 .slider_chart {height: 100%;width:30%;position:absolute;left:0;resize:both;border:1px solid #DDE7ED;}
-.bigBar {overflow-x:scroll;overflow-y:hidden;padding-bottom: 30px;margin-bottom: -30px;touch-action: none;}
+.bigBar {overflow-x:scroll;overflow-y:hidden;padding-bottom: 30px;margin-bottom: -30px;touch-action: pan-y;}
 .bigBar {height: 250px;} /*250 - 30 запас на скролл, остается 220, - 25 на даты, остается 195*/
 .bigBar .sub, .vert, .hor {height: 195px;}
 .sub {border-bottom:1px solid #F2F4F5;}
