@@ -169,44 +169,14 @@ function getCurrentYProportion(currentY, max) {
 
 function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates, countAllX) {
 	
-	if(renderAdditems) {
-	
-		//var divHorWrap = document.createElement('div');
-		//divHorWrap.className = DOM.hor;	
-		//document.querySelector(wrapDom+el + ' .'+DOM.subInBar).appendChild(divHorWrap);
-	
-
-		//render X dates
-		//var allSpanX = '';
-		//for(var i = x_start; i < x_end - 1; i++) {
-		//
-		//var strWithDataTooltip = '<div class="'+DOM.tooltipWrapY+'">';
-		//for(var k = 0; k < numberOfChartsY; k++) {
-		//	strWithDataTooltip += '<div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'"><strong>'+kFormatter(yDataArr[k][i])+'</strong></div><div style="color:'+getColorByLabel(arrLabels[k], numberData, chart)+'">'+arrLabels[k]+'</div></div>';
-		//}
-		//strWithDataTooltip += '</div>';		
-		//
-		//	allSpanX += '<span data-id='+i+'><div class="'+DOM.dataWrap+'"><div class="relative"><div class="'+DOM.d+'">'+prettyDate(arrDates[i], 'DDD, MMM dd')+'</div>'+strWithDataTooltip+'</div></div><i>'+prettyDate(arrDates[i], 'MMM dd')+'</i></span>';
-		//}
-		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).innerHTML = '';
-		//document.querySelector(wrapDom+el + ' '+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);	
-		//render X dates
-		
-		
-
-	}
-	
-	
 		var oneDot = (100 / (x_end - 1)); // 0.8928571428571429
 		var svgPath = '<div class="wrapSvgPath"><svg class="svgPath" viewBox="0 0 100 100" preserveAspectRatio="none" style="width: calc(100%); height: calc(100.0%);position:absolute;top:0;left:0;">';	
 	
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
 
-		
 		svgPath += '<polyline class="poly_y poly_'+arrLabels[k]+'" vector-effect="non-scaling-stroke" stroke-width="2" fill="none" points="';
-		
-		//CHECK
+
 		for(var i = x_start; i < x_end; i++) {
 			svgPath+=' '+(oneDot*i)+','+getCurrentYProportion(yDataArr[k][i], max); 
 		}
@@ -214,34 +184,21 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 		svgPath += '"></polyline>';
 		
 		if(renderAdditems) {
-			svgPath += '<line class="pseudoCircleBig pseudoCircle_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:10px;vector-effect:non-scaling-stroke" />';
-			svgPath += '<line class="pseudoCircleSmall pseudoCircleSmall_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:7px;vector-effect:non-scaling-stroke" />';
+			svgPath += '<line class="ps_'+arrLabels[k]+' pseudoCircleBig pseudoCircle_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:10px;vector-effect:non-scaling-stroke" />';
+			svgPath += '<line class="ps_'+arrLabels[k]+' pseudoCircleSmall pseudoCircleSmall_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:7px;vector-effect:non-scaling-stroke" />';
 		}
 	}
 	
-	
 	svgPath += '</svg></div>';
 	
-	
 	document.querySelector(wrapDom+el+ ' .sub').insertAdjacentHTML('beforeend', svgPath);
-	
-	
-
 }
 
 function renderWrapperBar(el, x_start, x_end, numberOfChartsY, arrLabels) {
 	var divSub = document.createElement('div');
 	divSub.className = DOM.subInBar;	
 	document.querySelector(wrapDom+el).appendChild(divSub);
-	
-	
-	//for(var k = 0; k < numberOfChartsY; k++) {
-	//	var div = document.createElement('div');
-	//	div.className = 'y ' + arrLabels[k];
-	//	document.querySelector(wrapDom+el + ' .' + DOM.subInBar).appendChild(div);
-//}
 }
-
 
 function generateAllPoints(numberOfChartsY, chartLength, yDataArr) {
 	var arrAllPoints = [];
@@ -262,12 +219,10 @@ function generateCSS(sheet, arrLabels, numberOfChartsY, numberData, chart) {
 		var selector = arrLabels[k];
 		
 		var strDotsY = wrapDom+'.'+selector + ' ' + '.'+DOM.yn_dot+' {background:'+getColorByLabel(selector,numberData, chart)+' !important;}';
-		//var strLines = '.'+selector + ' ' + 'svg line {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		var strLinesPoly = wrapDom+'polyline.poly_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		var pseudoCircleCss = wrapDom+'.pseudoCircle_'+arrLabels[k]+' {stroke:'+getColorByLabel(selector,numberData, chart)+' !important;}';
 		
 		sheet.insertRule(strDotsY, 0);
-		//sheet.insertRule(strLines, 0);
 		sheet.insertRule(strLinesPoly, 0);
 		sheet.insertRule(pseudoCircleCss, 0);
 	}
@@ -303,7 +258,7 @@ function hideUncheked(i, wrapDom) {
 
 function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfChartsY, chartLength, countAllX, wrapDom, chartMaxYAll,numberData,chart, arrLabels) {
 	
-	document.querySelector(wrapDom+'.myhover').addEventListener('mousemove', showTooltipFn);	//myhover
+	document.querySelector(wrapDom+'.myhover').addEventListener('mousemove', showTooltipFn);
 	
 	function showTooltipFn(event) {
 			if(getActiveChecked(checkboxesArr).indexOf(true) !== -1)  {
@@ -312,48 +267,32 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			var widthSlider = document.querySelector(wrapDom + DOM.slider_chart).offsetWidth;
 			var leftOfSlid = parseFloat(document.querySelector(wrapDom+DOM.slider_chart).style.left.replace('px',''));
 			
-			//console.log(leftOfSlid);
 			var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 - 0
 	
 			
 			var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
-			//console.log(numberCurX);
 			var rightStartCurX = leftStartCurPozX + numberCurX;
 			
-
-			//console.log(event);
-			//console.log(`
-			//	${leftOfSlid} leftOfSlid
-			//	${leftStartCurPozX} leftStartCurPozX
-			//	${countAllX} countAllX
-			//	${numberCurX} numberCurX
-			//	${rightStartCurX}  rightStartCurX
-			//`);
 			
 		var wrapObj = document.querySelector(wrapDom + '.slider_chart_wrap');	
 		var percentOnCurDisplay = (event.clientX-wrapObj.offsetLeft) / wrapObj.offsetWidth * 100;
-		//console.log(percentOnCurDisplay);
 		
 		var curDot = Math.round(leftStartCurPozX + (percentOnCurDisplay * numberCurX / 100));
-		//console.log(curDot);
-		//
-		
-		//console.log(curDot);
-		
-		//console.log(percentOnCurDisplay);
-		//console.log(curDot);
-		
-		//console.log(x_end);
-		
-		
+			
 	var wrapDomDataObj = document.querySelector(wrapDom+'.'+DOM.dataWrap);
 	var strWithDataTooltip = '';
-	//var toolTipDots = '';
+
 	curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
 	
+	var active = getActiveChecked(checkboxesArr);
 	for(var k = 0; k < numberOfChartsY; k++) {
 		var colorCur = getColorByLabel(arrLabels[k], numberData, chart);
-		strWithDataTooltip += '<div><div style="color:'+colorCur+'"><strong>'+kFormatter(yDataArr[k][curDot])+'</strong></div><div style="color:'+colorCur+'">'+arrLabels[k]+'</div></div>';
+		
+		var str = '';
+		if(!active[k]) {str+='style="display:none;"'}
+		else {str+='style="display:block;"'}
+		strWithDataTooltip += '<div '+str+' class="dataColor_'+arrLabels[k]+'"><div style="color:'+colorCur+'"><strong>'+kFormatter(yDataArr[k][curDot])+'</strong></div><div style="color:'+colorCur+'">'+arrLabels[k]+'</div></div>';
+		
 		
 		var curCircleX = (100 / (countAllX - 1));
 		
@@ -398,14 +337,14 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		
 		wrapDomDataObj.style.display = 'block';	
 		
+		var rect = bigCircle.getBoundingClientRect();
+		
 		var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
 		var arrCirclesArr = [].slice.call(arrCircles);
 		arrCirclesArr.forEach(function(i) {i.style.display = 'block';});	
 		
 	}
-		//
-		
-		
+
 			}//if we have data
 	}//showTooltipFn
 	
@@ -442,9 +381,9 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 
 
 	document.querySelector(wrapDom+DOM.slider_chart).addEventListener('mousedown', function(e) {
-		if(e.target.className !== DOM.resizerLeftClass && e.target.className !== DOM.resizerRightClass) {//чтобы не ездила когда я делаю ресайз
+		if(e.target.className !== DOM.resizerLeftClass && e.target.className !== DOM.resizerRightClass) {
 		
-			coords = getCoords(elSlidMove);//чтобы высчитать сдвиг
+			coords = getCoords(elSlidMove);
 			shiftX = e.pageX - coords.left;		
 			
 			updateInfoAboutSlider();
@@ -464,7 +403,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	
 	resizerLeft.addEventListener('mousedown', function(e) {	
 	
-		coordsL = getCoords(elSlidMove);//чтобы высчитать сдвиг
+		coordsL = getCoords(elSlidMove);
 		shiftL = e.pageX - coordsL.left;
 			
 		helperInitResizers(e);
@@ -474,7 +413,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 
 	resizerRight.addEventListener('mousedown', function(e) {
 	
-		coordsR = getCoords(document.querySelector(wrapDom+DOM.resizerRight));//чтобы высчитать сдвиг
+		coordsR = getCoords(document.querySelector(wrapDom+DOM.resizerRight));
 		shiftR = e.pageX - coordsR.left;
 	
 		helperInitResizers(e);
@@ -492,7 +431,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	
 	function updateInfoAboutSlider() {
 		widthSlider = elSlidMove.offsetWidth; //320
-		sliderAllWidth = elBigBar.offsetWidth; //640 - any wrap element
+		sliderAllWidth = elBigBar.offsetWidth; //640
 		
 	}
 	
@@ -540,28 +479,7 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	
 	document.querySelector(wrapDom+DOM.horGridWrap).innerHTML = '';
 	document.querySelector(wrapDom+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);
-	//render X dates		
-		
-		
-		//onlyforResize
-		
-		//var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-		////console.log(everyThisXToHide);
-		//for(var i = leftStartCurPozX; i <= rightStartCurX; i++) {
-		//	var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
-		//	if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
-		//		if(selector) {
-		//			selector.classList.add(DOM.displayHorLabelDate);
-		//		}
-		//	}
-		//	else {
-		//		if(selector) {
-		//			selector.classList.remove(DOM.displayHorLabelDate);
-		//		}
-		//	}
-		//}
-		
-		
+	
 		curMax = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
 		generateVertGrid(curMax, wrapDom);
 
@@ -596,17 +514,10 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
           element.style.left = leftSlidCur + 'px';
 		  
 		  elBigBar.scrollLeft = leftSlidCur * (elBigBar.scrollWidth / elBigBar.offsetWidth);
-		  //у левого скролл перемещение похоже на драг
 
         }
 		}//if>0
 		
-		
-		//optional - auto bounds left
-		else {
-			//element.style.left = 0;
-			//elBigBar.scrollLeft = 0;
-		}
     }
 	
 	function resizeRight(e) {
@@ -646,8 +557,6 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
       window.removeEventListener('mousemove', resizeRight)
     }
 	
-	
-	
 	ch.forEach(function(g) {
 		g.onchange = function(e){		
 		//
@@ -658,7 +567,30 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 			document.querySelector(wrapDom+'.'+DOM.dataWrap).style.display = 'none';
 			var arrCircles = document.querySelectorAll(wrapDom+'.svgPath line');//circles
 			var arrCirclesArr = [].slice.call(arrCircles);
-			arrCirclesArr.forEach(function(i) {i.style.display = 'none';});				
+			arrCirclesArr.forEach(function(i) {i.style.display = 'none';});		
+			
+			//console.log(getActiveChecked(checkboxesArr));
+			
+			var active = getActiveChecked(checkboxesArr);
+			for(var k = 0;k<numberOfChartsY;k++) {
+				var arrCircles = document.querySelectorAll(wrapDom+'.ps_'+arrLabels[k]);//circles
+				var arrCirclesArr = [].slice.call(arrCircles);			
+				if(active[k]) {
+					arrCirclesArr.forEach(function(i) {i.style.visibility = "visible";});
+				}
+				else {
+					arrCirclesArr.forEach(function(i) {i.style.visibility = "hidden";});
+				}
+				//
+				var arrCircles1 = document.querySelectorAll(wrapDom+'.dataColor_'+arrLabels[k]);//circles
+				var arrCirclesArr1 = [].slice.call(arrCircles1);			
+				if(active[k]) {
+					arrCirclesArr1.forEach(function(i) {i.style.display = "block";});
+				}
+				else {
+					arrCirclesArr1.forEach(function(i) {i.style.display = "none";});
+				}				
+			}
 			
 			//which tooltip are shown
 			
