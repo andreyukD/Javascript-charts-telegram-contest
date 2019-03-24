@@ -21,10 +21,10 @@ label.checkboxLineY b {position:absolute;top: 0;left: 0;width:0%;height:100%;dis
 }
 .svgPath {transition:all .4s ease-in-out;}
 .wrapSvgPath {position:absolute;width:100%;height:100%;left:0;top:0;transform:scaleY(-1);}
-
+.slider_chart {background:#fff;}
 body.night, body.night .noneChecked i {background:#242f3e !important;}
 body.night .followers {color:#fff;}
-body.night .slider_chart {border-color:#40566b;background:rgba(31,42,56);}
+body.night .slider_chart {border-color:#40566b;background:rgb(31,42,56);}
 body.night .smallBar {border-color:#40566b;}
 body.night .checkboxLineY {border-color:#344658;}
 body.night .vert span i, body.night .hor span i, body.night .vert::after {color:#546778;}
@@ -51,7 +51,7 @@ body {font-family:sans-serif;font-size:14px;}
 .smallBar span i.simpleY, .bigBar span i.simpleY {display: block;width: 1px;height: 1px;background:blue;left: 0;position:absolute;transform:translateX(-50%);font-size:9px;transition:all 1s;border-radius:50%;}
 .followers {font-weight:700;margin-bottom:20px;margin-top: 20px;color:#222222;font-size:20px;}
 .slider_chart_wrap {background:rgba(245,249,251);z-index:3;}
-.slider_chart {background:#fff;}
+
 .wrapSmallNDrag {z-index:10;pointer-events:none;}
 .y {position:absolute;width:100%;top: 0;left: 0;height:100%;display:flex;transition:opacity .3s, top .5s;}
 .poly_y.hide {opacity:0;top:-100%;}
@@ -76,7 +76,7 @@ body {font-family:sans-serif;font-size:14px;}
 .no-data {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;z-index:10;}
 .bigBar .y span:hover i.simpleY {width:10px;height:10px;background:blue;}
 .dataWrap {position:absolute;height:calc(100% - 15px);left:0;top:-10px;min-width:150px;z-index:10;transform:translateX(-50%);z-index:10;display:none;}
-.svgPath line {display:none;z-index:15;}
+.svgPath line {display:none;z-index:15;transition:all .5s;}
 .dataWrap::before {position:absolute;display:none;width:2px;height:100%;top:0;left:50%;background:#F2F4F5;content:'';transform:translateX(-50%);}
 .data {
 	position:relative;

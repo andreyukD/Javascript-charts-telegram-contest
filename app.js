@@ -169,8 +169,9 @@ function getCurrentYProportion(currentY, max) {
 
 function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, arrLabels, yDataArr, numberData, chart, arrDates, countAllX) {
 	
+	
 		var oneDot = (100 / (x_end - 1)); // 0.8928571428571429
-		var svgPath = '<div class="wrapSvgPath"><svg class="svgPath" viewBox="0 0 100 100" preserveAspectRatio="none" style="width: calc(100%); height: calc(100.0%);position:absolute;top:0;left:0;">';	
+		var svgPath = '<div class="wrapSvgPath"><svg xmlns="http://www.w3.org/2000/svg" class="svgPath" viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;position:absolute;top:0;left:0;">';	
 	
 	
 	for(var k = 0; k < numberOfChartsY; k++) {
@@ -184,8 +185,10 @@ function renderPart(el, x_start, x_end, max, renderAdditems, numberOfChartsY, ar
 		svgPath += '"></polyline>';
 		
 		if(renderAdditems) {
-			svgPath += '<line class="ps_'+arrLabels[k]+' pseudoCircleBig pseudoCircle_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:10px;vector-effect:non-scaling-stroke" />';
-			svgPath += '<line class="ps_'+arrLabels[k]+' pseudoCircleSmall pseudoCircleSmall_'+arrLabels[k]+'"  x1="0" y1="0" x2="0" y2="0" style="stroke-linecap:round;stroke-width:7px;vector-effect:non-scaling-stroke" />';
+			var str='';
+			if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {str+='style="opacity:0 !important;"'}
+			svgPath += '<line '+str+' class="ps ps_'+arrLabels[k]+' pseudoCircleBig pseudoCircle_'+arrLabels[k]+'" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-width="10" fill="none" x1="0" y1="0" x2="0" y2="0" />';
+			svgPath += '<line '+str+' class="ps ps_'+arrLabels[k]+' pseudoCircleSmall pseudoCircleSmall_'+arrLabels[k]+'" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-width="7" fill="none"  x1="0" y1="0" x2="0" y2="0" />';
 		}
 	}
 	
@@ -380,6 +383,10 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 	var coords, shiftX, shiftL, coordsL, coordsR, shiftR, helperForLeftBouning, countAllX, optimalDatesPerWidth;
 
 
+	document.querySelector(wrapDom+DOM.slider_chart).ondragstart = function() {
+		return false;
+	};
+	
 	document.querySelector(wrapDom+DOM.slider_chart).addEventListener('mousedown', function(e) {
 		if(e.target.className !== DOM.resizerLeftClass && e.target.className !== DOM.resizerRightClass) {
 		
@@ -650,26 +657,11 @@ function setEventListeners(ch, arrDates, checkboxesArr, yDataArr, numberOfCharts
 		var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 (odstup) / 1000 - shirslid
 		var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));	
 		var rightStartCurX = leftStartCurPozX + numberCurX;
-		
-		//console.log(`${chartMaxYAll} max`);
-		
 		var curMaxBig = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
 		var propBig = (curMaxBig / chartMaxYAll) * 100;
 		document.querySelector(wrapDom+DOM.bigBar+' .svgPath').style.height = (100 / (propBig/100)) + '%';
-		//	
-		
-
-	//console.log(chartMaxYAll);
-		
-		
-	}//goflex
-		
-		
-
-		
+	}//goflex	
 }	
-
-
 
 //
 function getMax(x_start, x_end, whichActive, yDataArr) {
@@ -722,11 +714,8 @@ loadJSON(function(json) {
 function myLoadJson(json) {
 
 var chart = json;
-//console.log(chart);
 
 function generate(nr_chart, heading, chart) {
-	
-	//if(nr_chart === 0) {console.log(true);}
 	
 	wrDomClass = 'w'+nr_chart;
 	wrapDom = '.w'+nr_chart+' ';
@@ -793,18 +782,17 @@ function generate(nr_chart, heading, chart) {
 	widthSlider = document.querySelector(wrapDom+DOM.slider_chart).offsetWidth;
 	sliderAllWidth = document.querySelector(wrapDom+DOM.bigBar).offsetWidth;
 	document.querySelector(wrapDom+DOM.bigBar).querySelector(wrapDom+'.'+DOM.subInBar).style.width = (sliderAllWidth / widthSlider * 100) +"%";
-	document.querySelector(wrapDom+DOM.slider_chart).style.left = "0";
-	document.querySelector(wrapDom+DOM.bigBar).scrollLeft = 0;
 	
+	var x = sliderAllWidth - widthSlider;
+	document.querySelector(wrapDom+DOM.slider_chart).style.left = x + 'px';
+	document.querySelector(wrapDom+DOM.bigBar).scrollLeft = x * (document.querySelector(wrapDom+DOM.bigBar).scrollWidth / document.querySelector(wrapDom+DOM.bigBar).offsetWidth);
 	
 	var leftOfSlid = parseFloat(document.querySelector(wrapDom+DOM.slider_chart).style.left.replace('px',''));//0
 	var leftStartCurPozX = Math.round(countAllX * leftOfSlid / sliderAllWidth); //112 * 40 - 0
 	
 	var countAllX = arrDates.length;
 	var numberCurX = Math.round(countAllX / (sliderAllWidth / widthSlider));
-	//console.log(numberCurX);
 	var rightStartCurX = leftStartCurPozX + numberCurX;
-	
 
 	//render X dates (need after processing cur positions)
 	var allSpanX = '';
@@ -817,38 +805,19 @@ function generate(nr_chart, heading, chart) {
 	
 	document.querySelector(wrapDom+DOM.horGridWrap).innerHTML = '';
 	document.querySelector(wrapDom+DOM.horGridWrap).insertAdjacentHTML('beforeend',allSpanX);
-	//render X dates	
-	
-	//initDates
-	//var optimalDatesPerWidth =  Math.floor(sliderAllWidth / 70);
-	
-	//var everyThisXToHide = Math.ceil(numberCurX / optimalDatesPerWidth);
-	//for(var i = 0; i <= rightStartCurX; i++) {
-	//	var selector = document.querySelector(wrapDom+'.hor span[data-id="'+i+'"] i');
-	//	if(i % everyThisXToHide == 0)  {//оставляю каждый четвертый/второй итп
-	//		if(selector) {
-	//			selector.classList.add(DOM.displayHorLabelDate);
-	//		}
-	//	}
-	//	else {
-	//		if(selector) {
-	//			selector.classList.remove(DOM.displayHorLabelDate);
-	//		}
-	//	}
-	//}
-	//initDates
-	
+
 	//
-	var curMaxBig = arrmax(getMax(0,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
-	var propBig = (curMaxBig / chartMaxYAll) * 100;
-	document.querySelector(wrapDom+DOM.bigBar+' .svgPath').style.height = (100 / (propBig/100)) + '%';
+		var curMaxBig = arrmax(getMax(leftStartCurPozX,rightStartCurX,getActiveChecked(checkboxesArr), yDataArr));
+		var propBig = (curMaxBig / chartMaxYAll) * 100;
+		document.querySelector(wrapDom+DOM.bigBar+' .svgPath').style.height = (100 / (propBig/100)) + '%';
+	
+	
 	//	
 	var curMaxSmall = arrmax(getMax(0,chartLength,getActiveChecked(checkboxesArr), yDataArr));
 	var propSmall = (curMaxSmall / chartMaxYAll) * 100;
 	document.querySelector(wrapDom+DOM.smallBar+' .svgPath').style.height = (100 / (propSmall/100)) + '%';	
 	
-	generateVertGrid(arrmax(getMax(0,numberCurX,getActiveChecked(checkboxesArr), yDataArr)), wrapDom);
-	
+	generateVertGrid(curMaxBig, wrapDom);
 	
 	//
 	
@@ -863,9 +832,6 @@ function generate(nr_chart, heading, chart) {
 			setTimeout(function(){i.classList.remove('animate_check');}, 500);
 		});
 	});
-	
-	//
-	
 }
 
 nightfn();
@@ -874,9 +840,6 @@ generate(1, 'Heading 2', chart);
 generate(2, 'Heading 3', chart);
 generate(3, 'Heading 4', chart);
 generate(4, 'Heading 5', chart);
-
-//
-
 }
 
 mapTouchEvents();
